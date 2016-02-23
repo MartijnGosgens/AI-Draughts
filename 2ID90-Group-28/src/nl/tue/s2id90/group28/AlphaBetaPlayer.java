@@ -17,36 +17,37 @@ import org10x10.dam.game.Move;
  */
 public class AlphaBetaPlayer extends DraughtsPlayer {
 
-    private final int DEPTH_LIMIT = 2;
     private boolean isBlack;
+    
+    private boolean stopped = false;
+    
+    @Override
+    public void stop() { stopped = true; }
     
     @Override
     public Move getMove(DraughtsState s) {
         List<Move> moves = s.getMoves();
-        int bestValue = Integer.MIN_VALUE;
         Move bestMove = null;
         
-        int bruteForceValue = bruteForceMax(s, 0);
+        //int bruteForceValue = bruteForceMax(s, 0);
         
         // See whether the player plays black or white
         isBlack = moves.get(0).isBlackMove();
         
-        // Find the best move
-        for (Move m : moves) {
-            s.doMove(m);
-            int value = alphaBetaMax(s, Integer.MIN_VALUE, Integer.MAX_VALUE, 1);
-            if (value > bestValue) {
-                bestValue = value;
-                bestMove = m;
+        // Use iterative deepening
+        for (int d = 3; d < 100; d++) {
+            try {
+                bestMove = alphaBetaSearch(s, d);
+            } catch (AIStoppedException e) {
+                return bestMove;
             }
-            s.undoMove(m);
         }
         
         // Test whether alpha-beta gets the same value as brute force.
-        if (bruteForceValue != bestValue) {
-            System.out.println("AlphaBeta does not work, brute force: "
-                    + bruteForceValue + ", alpha-beta: " + bestValue);
-        }
+//        if (bruteForceValue != bestValue) {
+//            System.out.println("AlphaBeta does not work, brute force: "
+//                    + bruteForceValue + ", alpha-beta: " + bestValue);
+//        }
         return bestMove;
     }
     
@@ -62,7 +63,7 @@ public class AlphaBetaPlayer extends DraughtsPlayer {
         int blackValue;
         int whiteValue;
         for(int p = 1; p < pieces.length; p++){
-            occurences[p]++;
+            occurences[pieces[p]]++;
         }
         blackValue = occurences[s.BLACKPIECE] + 2*occurences[s.BLACKKING];
         whiteValue = occurences[s.WHITEPIECE] + 2*occurences[s.WHITEKING];
@@ -76,15 +77,36 @@ public class AlphaBetaPlayer extends DraughtsPlayer {
         return value;
     }
     
+    private Move alphaBetaSearch(DraughtsState s, int depth) throws AIStoppedException{
+        List<Move> moves = s.getMoves();
+        
+        int bestValue = Integer.MIN_VALUE;
+        Move bestMove = null;
+        
+        // Find the best move
+        for (Move m : moves) {
+            s.doMove(m);
+            int value = alphaBetaMin(s, Integer.MIN_VALUE, Integer.MAX_VALUE, depth);
+            if (value > bestValue) {
+                bestValue = value;
+                bestMove = m;
+            }
+            s.undoMove(m);
+        }
+        
+        return bestMove;
+    }
+    
     private int alphaBetaMax(DraughtsState s, int alpha, int beta,
-                                int depth) {
-        if (depth>DEPTH_LIMIT) {
+                            int depth) throws AIStoppedException{
+        checkAndThrow();
+        if (depth < 0) {
             return getValue(s);
         } else {
             List<Move> moves = s.getMoves();
             for (Move m : moves) {
                 s.doMove(m);
-                int min = alphaBetaMin(s, alpha, beta, depth + 1);
+                int min = alphaBetaMin(s, alpha, beta, depth - 1);
                 alpha = (alpha > min ? alpha : min);
                 s.undoMove(m);
                 if (alpha >= beta) {
@@ -96,14 +118,15 @@ public class AlphaBetaPlayer extends DraughtsPlayer {
     }
     
     private int alphaBetaMin(DraughtsState s, int alpha, int beta,
-                                int depth) {
-        if (depth>DEPTH_LIMIT) {
+                            int depth) throws AIStoppedException{
+        checkAndThrow();
+        if (depth < 0) {
             return getValue(s);
         } else {
             List<Move> moves = s.getMoves();
             for (Move m : moves) {
                 s.doMove(m);
-                int max = alphaBetaMax(s, alpha, beta, depth + 1);
+                int max = alphaBetaMax(s, alpha, beta, depth - 1);
                 beta = (beta < max ? beta : max);
                 s.undoMove(m);
                 if (alpha >= beta) {
@@ -115,14 +138,14 @@ public class AlphaBetaPlayer extends DraughtsPlayer {
     }
     
     int bruteForceMax(DraughtsState s, int depth) {
-        if (depth>DEPTH_LIMIT) {
+        if (depth < 0) {
             return getValue(s);
         } else {
             List<Move> moves = s.getMoves();
             int max = Integer.MIN_VALUE;
             for (Move m : moves) {
                 s.doMove(m);
-                int value = bruteForceMin(s, depth + 1);
+                int value = bruteForceMin(s, depth - 1);
                 max = (value > max ? value : max);
                 s.undoMove(m);
             }
@@ -131,18 +154,25 @@ public class AlphaBetaPlayer extends DraughtsPlayer {
     }
     
     int bruteForceMin(DraughtsState s, int depth) {
-        if (depth>DEPTH_LIMIT) {
+        if (depth < 0) {
             return getValue(s);
         } else {
             List<Move> moves = s.getMoves();
             int min = Integer.MAX_VALUE;
             for (Move m : moves) {
                 s.doMove(m);
-                int value = bruteForceMax(s, depth + 1);
+                int value = bruteForceMax(s, depth - 1);
                 min = (value < min ? value : min);
                 s.undoMove(m);
             }
             return min;
+        }
+    }
+    
+    private void checkAndThrow() throws AIStoppedException {
+        if (stopped) {
+            stopped = false;
+            throw new AIStoppedException();
         }
     }
 }
