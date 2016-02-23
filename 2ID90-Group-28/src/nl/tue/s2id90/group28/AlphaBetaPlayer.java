@@ -56,7 +56,24 @@ public class AlphaBetaPlayer extends DraughtsPlayer {
      * @return the evaluated value
      */
     private int getValue(DraughtsState s) {
-        return 0;
+        int[] pieces = s.getPieces();
+        int[] occurences = {0,0,0,0,0};
+        int value;
+        int blackValue;
+        int whiteValue;
+        for(int p = 1; p < pieces.length; p++){
+            occurences[p]++;
+        }
+        blackValue = occurences[s.BLACKPIECE] + 2*occurences[s.BLACKKING];
+        whiteValue = occurences[s.WHITEPIECE] + 2*occurences[s.WHITEKING];
+//        TODO: calculate value for black player or white player?
+//        if(player == black){
+//            value = blackValue - whiteValue;
+//        } else {
+//            value = whiteValue - blackValue;
+//        }
+        value = blackValue - whiteValue;
+        return value;
     }
     
     private int alphaBetaMax(DraughtsState s, int alpha, int beta,
