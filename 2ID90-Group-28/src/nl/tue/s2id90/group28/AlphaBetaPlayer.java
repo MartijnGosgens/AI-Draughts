@@ -68,13 +68,11 @@ public class AlphaBetaPlayer extends DraughtsPlayer {
         }
         blackValue = occurences[s.BLACKPIECE] + 2*occurences[s.BLACKKING];
         whiteValue = occurences[s.WHITEPIECE] + 2*occurences[s.WHITEKING];
-//        TODO: calculate value for black player or white player?
-//        if(player == black){
-//            value = blackValue - whiteValue;
-//        } else {
-//            value = whiteValue - blackValue;
-//        }
-        value = blackValue - whiteValue;
+        if(isBlack){
+            value = blackValue - whiteValue;
+        } else {
+            value = whiteValue - blackValue;
+        }
         return value;
     }
     
