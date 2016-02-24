@@ -39,6 +39,7 @@ public class AlphaBetaPlayer extends DraughtsPlayer {
             try {
                 bestMove = alphaBetaSearch(s, d);
             } catch (AIStoppedException e) {
+                System.out.println("Depth level "+d+" reached.");
                 return bestMove;
             }
         }
@@ -142,14 +143,18 @@ public class AlphaBetaPlayer extends DraughtsPlayer {
             return getValue(s);
         } else {
             List<Move> moves = s.getMoves();
-            int max = Integer.MIN_VALUE;
-            for (Move m : moves) {
-                s.doMove(m);
-                int value = bruteForceMin(s, depth - 1);
-                max = (value > max ? value : max);
-                s.undoMove(m);
+            if (moves.size() > 0) {
+                int max = Integer.MIN_VALUE;
+                for (Move m : moves) {
+                    s.doMove(m);
+                    int value = bruteForceMin(s, depth - 1);
+                    max = (value > max ? value : max);
+                    s.undoMove(m);
+                }
+                return max;
+            } else {
+                return getValue(s);
             }
-            return max;
         }
     }
     
@@ -158,14 +163,18 @@ public class AlphaBetaPlayer extends DraughtsPlayer {
             return getValue(s);
         } else {
             List<Move> moves = s.getMoves();
-            int min = Integer.MAX_VALUE;
-            for (Move m : moves) {
-                s.doMove(m);
-                int value = bruteForceMax(s, depth - 1);
-                min = (value < min ? value : min);
-                s.undoMove(m);
+            if (moves.size() > 0) {
+                int min = Integer.MAX_VALUE;
+                for (Move m : moves) {
+                    s.doMove(m);
+                    int value = bruteForceMax(s, depth - 1);
+                    min = (value < min ? value : min);
+                    s.undoMove(m);
+                }
+                return min;
+            } else {
+                return getValue(s);
             }
-            return min;
         }
     }
     
