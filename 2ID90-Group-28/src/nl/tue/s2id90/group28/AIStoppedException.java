@@ -8,6 +8,7 @@ package nl.tue.s2id90.group28;
 /**
  *
  * @author s147569
+ * @author s140511
  */
 public class AIStoppedException extends Exception {
     public AIStoppedException() { 

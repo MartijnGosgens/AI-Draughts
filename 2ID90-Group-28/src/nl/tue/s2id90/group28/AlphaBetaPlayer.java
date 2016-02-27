@@ -14,6 +14,7 @@ import org10x10.dam.game.Move;
 /**
  *
  * @author s147569
+ * @author s140511
  */
 public class AlphaBetaPlayer extends DraughtsPlayer {
 
@@ -57,22 +58,85 @@ public class AlphaBetaPlayer extends DraughtsPlayer {
      * @param s the state
      * @return the evaluated value
      */
-    private int getValue(DraughtsState s) {
+    private double getValue(DraughtsState s) {
         int[] pieces = s.getPieces();
-        int[] occurences = {0,0,0,0,0};
-        int value;
-        int blackValue;
-        int whiteValue;
+        double blackValue = 0;
+        double whiteValue = 0;
+        //retrieve values of each piece
         for(int p = 1; p < pieces.length; p++){
-            occurences[pieces[p]]++;
+            switch (pieces[p]){
+                case s.BLACKPIECE:
+                    blackValue += getPieceValue(0, getRowNumber(p), false);
+                    break;
+                case s.BLACKKING:
+                    blackValue += getPieceValue(getPosition(p), 0, true);
+                    break;
+                case s.WHITEPIECE:
+                    whiteValue += getPieceValue(0, getRowNumber(p), false);
+                    break;
+                case s.WHITEKING:
+                    whiteValue += getPieceValue(getPosition(p), 0, true);
+                    break;
+            }
         }
-        blackValue = occurences[s.BLACKPIECE] + 2*occurences[s.BLACKKING];
-        whiteValue = occurences[s.WHITEPIECE] + 2*occurences[s.WHITEKING];
+        
+        //return total value as a ratio of black and white
         if(isBlack){
-            value = blackValue - whiteValue;
+            try {
+                return blackValue / whiteValue;
+            } catch (ArithmeticException e) {
+                System.out.println("whiteValue = 0, white has lost the game.");
+                return Integer.MAX_VALUE;
+            }
         } else {
-            value = whiteValue - blackValue;
+            try {
+                return whiteValue / blackValue;
+            } catch (ArithmeticException e) {
+                System.out.println("blackValue = 0, black has lost the game.");
+                return Integer.MAX_VALUE;
+            }
         }
+    }
+    
+    private int getRowNumber(int p){
+        return (int) (p / 5 - 0.1);
+    }
+    
+//    MIDDLE = 0
+//    LEFTSIDE = 1
+//    RIGHTSIDE = 2
+//    TOPSIDE = 3
+//    BOTTOMSIDE = 4
+    private int getPosition(int p){
+        switch (p){
+            case 1: case 2: case 3: case 4: case 5:
+                return 3;
+            case 46: case 47: case 48: case 49: case 50:
+                return 4;
+            default:
+                if (p % 5 == 0 && p % 10 != 0){
+                    return 2;
+                } else if ((p + 1) % 5 == 0 && (p + 1) % 10 != 0) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+        }
+    }
+    
+    private int getPieceValue(int position, int rowNumber, boolean isKing){
+        int value = 100;
+        if (isKing) {
+            value *= 2; //double the value for kings
+            if (position > 0) value += 20; //King is on the side
+        } else {
+            if (rowNumber == 9){ //defensive pieces are worth more
+                value += 20;
+            } else { 
+                value += (8-rowNumber) * 3; //the closer to becoming king, the more worth
+            }
+        }
+
         return value;
     }
     
