@@ -153,8 +153,16 @@ public class AlphaBetaPlayer extends DraughtsPlayer {
         return value;
     }
     
+    
+    
     private Move alphaBetaSearch(DraughtsState s, int depth) throws AIStoppedException{
         List<Move> moves = s.getMoves();
+        
+        // If we are forced to do a certain move, it is useless to search all
+        // possibilities afterwards.
+        if (moves.size() == 1) {
+            return moves.get(0);
+        }
         
         double bestValue = Integer.MIN_VALUE;
         Move bestMove = null;
