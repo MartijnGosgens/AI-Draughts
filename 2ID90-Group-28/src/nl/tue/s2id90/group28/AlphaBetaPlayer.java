@@ -73,7 +73,7 @@ public class AlphaBetaPlayer extends DraughtsPlayer {
                     blackValue += getPieceValue(getPosition(p), 0, true);
                     break;
                 case DraughtsState.WHITEPIECE:
-                    whiteValue += getPieceValue(0, getRowNumber(p), false);
+                    whiteValue += getPieceValue(1, getRowNumber(p), false);
                     break;
                 case DraughtsState.WHITEKING:
                     whiteValue += getPieceValue(getPosition(p), 0, true);
@@ -91,39 +91,62 @@ public class AlphaBetaPlayer extends DraughtsPlayer {
         }
     }
     
+    /**
+     * Evaluates the row of {@code p}.
+     * @param p
+     * @return the row number of p
+     */
     private int getRowNumber(int p){
         return (int) (p / 5 - 0.1);
     }
     
-//    MIDDLE = 0
-//    LEFTSIDE = 1
-//    RIGHTSIDE = 2
-//    TOPSIDE = 3
-//    BOTTOMSIDE = 4
+    /**
+     * Checks whether the piece is on the side or in the middle.
+     * @param p
+     * @return the position of p
+     * @note middle = 0
+     * @note left = 1
+     * @note right = 2
+     * @note top = 3
+     * @note bottom = 4
+     */
     private int getPosition(int p){
         if (p < 6) {
             return 3;
         } else if (p > 45) {
             return 4;
-        } else if (p % 5 == 0 && p % 10 != 0){
+        } else if (p % 10 == 5){
             return 2;
-        } else if ((p + 1) % 5 == 0 && (p + 1) % 10 != 0) {
+        } else if (p % 10 == 6) {
             return 1;
         } else {
             return 0;
         }
     }
     
+    /**
+     * Evaluates the value of a single piece.
+     * @param position
+     * @param rowNumber
+     * @param isKing
+     * @return value of the piece
+     */
     private int getPieceValue(int position, int rowNumber, boolean isKing){
         int value = 100;
         if (isKing) {
             value *= 2; //double the value for kings
             if (position > 0) value += 20; //King is on the side
-        } else {
+        } else if (position == 0){ // the piece is black
             if (rowNumber == 9){ //defensive pieces are worth more
                 value += 20;
             } else { 
-                value += (8-rowNumber) * 3; //the closer to becoming king, the more worth
+                value += (9-rowNumber) * 3; //the closer to becoming king, the more worth
+            }
+        } else { // the piece is white
+            if (rowNumber == 0){ //defensive pieces are worth more
+                value += 20;
+            } else { 
+                value += (rowNumber) * 3; //the closer to becoming king, the more worth
             }
         }
 
