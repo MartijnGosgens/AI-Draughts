@@ -18,8 +18,10 @@ import org10x10.dam.game.Move;
  */
 public class AlphaBetaPlayer extends DraughtsPlayer {
 
+    /** Whether this player is plays the black pieces*/
     private boolean isBlack;
     
+    /** Whether the program has signalled the AI to stop computing */
     private boolean stopped = false;
     
     @Override
@@ -27,13 +29,14 @@ public class AlphaBetaPlayer extends DraughtsPlayer {
     
     @Override
     public Move getMove(DraughtsState s) {
+        // Get the moves
         List<Move> moves = s.getMoves();
         Move bestMove = null;
         
         // See whether the player plays black or white
         isBlack = moves.get(0).isBlackMove();
         
-        // Use iterative deepening
+        // Use alphabeta search with iterative deepening
         for (int d = 3; d < 100; d++) {
             try {
                 bestMove = alphaBetaSearch(s, d);
@@ -53,8 +56,8 @@ public class AlphaBetaPlayer extends DraughtsPlayer {
     private double getValue(DraughtsState s, List<Move> moves) {
         
         // Check whether this player has won or lost
-        if (moves.isEmpty() &&  (s.isWhiteToMove() && isBlack
-             || !s.isWhiteToMove() && !isBlack)) {
+        if (moves.isEmpty() &&  (isBlack && s.isWhiteToMove()
+             || !isBlack && !s.isWhiteToMove())) {
             return Integer.MAX_VALUE;
         } else if (moves.isEmpty()){
             return Integer.MIN_VALUE+1;
@@ -65,7 +68,7 @@ public class AlphaBetaPlayer extends DraughtsPlayer {
         double whiteValue = 0;
         //retrieve values of each piece
         for (int p = 1; p < pieces.length; p++) {
-            switch (pieces[p]){
+            switch (pieces[p]) {
                 case DraughtsState.BLACKPIECE:
                     blackValue += getPieceValue(0, getRowNumber(p), false);
                     break;
@@ -183,12 +186,17 @@ public class AlphaBetaPlayer extends DraughtsPlayer {
     
     private double alphaBetaMax(DraughtsState s, double alpha, double beta,
                             int depth) throws AIStoppedException{
+        // Check the time limit
         checkAndThrow();
+        
         List<Move> moves = s.getMoves();
+        
+        // See whether this is a leaf
         if (depth < 0 || moves.isEmpty()) {
             return getValue(s, moves);
         } else {
             for (Move m : moves) {
+                // Do the alphabeta step
                 s.doMove(m);
                 double min = alphaBetaMin(s, alpha, beta, depth - 1);
                 alpha = (alpha > min ? alpha : min);
@@ -206,12 +214,16 @@ public class AlphaBetaPlayer extends DraughtsPlayer {
     
     private double alphaBetaMin(DraughtsState s, double alpha, double beta,
                             int depth) throws AIStoppedException{
+        // Check timelimit
         checkAndThrow();
+        
         List<Move> moves = s.getMoves();
+        // Check if leafnode
         if (depth < 0 || moves.isEmpty()) {
             return getValue(s, moves);
         } else {
             for (Move m : moves) {
+                // Do the alphabeta step
                 s.doMove(m);
                 double max = alphaBetaMax(s, alpha, beta, depth - 1);
                 beta = (beta < max ? beta : max);
@@ -224,6 +236,10 @@ public class AlphaBetaPlayer extends DraughtsPlayer {
         }
     }
     
+    /**
+     * Checks whether the time is up.
+     * @throws AIStoppedException 
+     */
     private void checkAndThrow() throws AIStoppedException {
         if (stopped) {
             stopped = false;
