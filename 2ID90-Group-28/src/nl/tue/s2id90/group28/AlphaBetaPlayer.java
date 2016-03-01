@@ -173,7 +173,7 @@ public class AlphaBetaPlayer extends DraughtsPlayer {
         // Find the best move
         for (Move m : moves) {
             s.doMove(m);
-            double value = alphaBetaMin(s, Integer.MIN_VALUE, Integer.MAX_VALUE, depth);
+            double value = alphaBetaMin(s, Integer.MIN_VALUE, Integer.MAX_VALUE, depth-1);
             if (value > bestValue) {
                 bestValue = value;
                 bestMove = m;
@@ -192,7 +192,7 @@ public class AlphaBetaPlayer extends DraughtsPlayer {
         List<Move> moves = s.getMoves();
         
         // See whether this is a leaf
-        if (depth < 0 || moves.isEmpty()) {
+        if (depth == 0 || moves.isEmpty()) {
             return getValue(s, moves);
         } else {
             for (Move m : moves) {
@@ -219,7 +219,7 @@ public class AlphaBetaPlayer extends DraughtsPlayer {
         
         List<Move> moves = s.getMoves();
         // Check if leafnode
-        if (depth < 0 || moves.isEmpty()) {
+        if (depth == 0 || moves.isEmpty()) {
             return getValue(s, moves);
         } else {
             for (Move m : moves) {
