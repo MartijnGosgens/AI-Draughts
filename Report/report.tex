@@ -46,8 +46,10 @@
 \maketitle
 \section{Algorithms}
 \subsection{Alpha-Beta Search}
+TODO
 
 \subsection{Iterative Deepening}
+TODO
 
 \subsection{Evaluation Function}
 \begin{algorithm} [H]
@@ -58,7 +60,7 @@
 \ElsIf {Opponent has no pieces left}
   \State Return $Integer.MAXVALUE$
 \Else
-  \ForAll {$pieces p$}
+  \ForAll {$pieces$  $p$}
     \State $pieceValue = 100$
     \If {$p$ is a king}
       \State $p.pieceValue *= 2$
@@ -96,16 +98,16 @@ For normal pieces, the defense line is valuable to keep the opponent from gettin
 After evaluating each piece value, the final value of the state is calculated as the ratio between the value of the AI's pieces and the value of the opponent's pieces. This will give a better approximation to the value of the state than taking the difference between the two, since for example the state with 5 pieces to 1 is much strong than with 20 pieces to 16, although the difference is the same. 
 
 \section{Results}
-blablabla
+It's fucking bitching good.
 
 \section{References}
 [1] http://www.checkerstip.com/handling-a-king-piece-in.html
 
 \section{Contribution}
-Martijn Gösgens: Alpha-Beta seach, iterative deepening.
+Martijn Gösgens: TODO Alpha-Beta seach, iterative deepening. \\
 Dominique Sommers: I designed the evaluation function for the AI. In order to do this, I studied good draughts patterns and searched for strong positions of particular pieces. These could be defended pieces (having a piece behind them, so they can not be jumped), defending pieces (having a piece in front of them), elbow pattern (pieces defending and being defended). However, I decided to keep the evaluation simple, since the method is called many times.
 
 \section{Manual}
-blablabla
+TODO
 
 \end{document}
