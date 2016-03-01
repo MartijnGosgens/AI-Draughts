@@ -67,13 +67,13 @@ public class AlphaBetaPlayer extends DraughtsPlayer {
         for (int p = 1; p < pieces.length; p++) {
             switch (pieces[p]){
                 case DraughtsState.BLACKPIECE:
-                    blackValue += getPieceValue(0, getRowNumber(p), false);
+                    blackValue += getPieceValue(DraughtsState.BLACKPIECE, getRowNumber(p), false);
                     break;
                 case DraughtsState.BLACKKING:
                     blackValue += getPieceValue(getPosition(p), 0, true);
                     break;
                 case DraughtsState.WHITEPIECE:
-                    whiteValue += getPieceValue(1, getRowNumber(p), false);
+                    whiteValue += getPieceValue(DraughtsState.WHITEPIECE, getRowNumber(p), false);
                     break;
                 case DraughtsState.WHITEKING:
                     whiteValue += getPieceValue(getPosition(p), 0, true);
@@ -131,12 +131,12 @@ public class AlphaBetaPlayer extends DraughtsPlayer {
      * @param isKing
      * @return value of the piece
      */
-    private int getPieceValue(int position, int rowNumber, boolean isKing){
+    private int getPieceValue(int position_color, int rowNumber, boolean isKing){
         int value = 100;
         if (isKing) {
             value *= 2; //double the value for kings
-            if (position > 0) value += 20; //King is on the side
-        } else if (position == 0){ // the piece is black
+            if (position_color > 0) value += 20; //King is on the side
+        } else if (position_color == DraughtsState.BLACKPIECE){ // the piece is black
             if (rowNumber == 9){ //defensive pieces are worth more
                 value += 20;
             } else { 
@@ -146,7 +146,7 @@ public class AlphaBetaPlayer extends DraughtsPlayer {
             if (rowNumber == 0){ //defensive pieces are worth more
                 value += 20;
             } else { 
-                value += (rowNumber) * 3; //the closer to becoming king, the more worth
+                value += rowNumber * 3; //the closer to becoming king, the more worth
             }
         }
 

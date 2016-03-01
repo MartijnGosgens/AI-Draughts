@@ -45,16 +45,65 @@
 \begin{document}
 \maketitle
 \section{Algorithms}
-blablabla
+\subsection{Alpha-Beta Search}
+
+\subsection{Iterative Deepening}
+
+\subsection{Evaluation Function}
+\begin{algorithm} [H]
+\caption{State Evaluation}\label{euclid}
+\begin{algorithmic}
+\If {AI has no pieces left}
+  \State Return $Integer.MINVALUE$
+\ElsIf {Opponent has no pieces left}
+  \State Return $Integer.MAXVALUE$
+\Else
+  \ForAll {$pieces p$}
+    \State $pieceValue = 100$
+    \If {$p$ is a king}
+      \State $p.pieceValue *= 2$
+      \If {$p$ is on the side}
+        \State $p.pieceValue += 20$
+      \EndIf
+    \ElsIf {$p$ is black}
+      \If {$p$ is on row $9$}
+        \State $p.pieceValue += 20$
+      \Else
+        \State $p.pieceValue += (9-rowNumber) * 3$
+      \EndIf
+    \Else
+      \If {$p$ is on row $0$}
+        \State $p.pieceValue += 20$
+      \Else
+        \State $p.pieceValue += rowNumber * 3$ 
+      \EndIf
+    \EndIf
+  \EndFor
+  
+  \State blackValue $\sum_{p\epsilon pieces} p.pieceValue $ where $p$ is black.
+  \State whiteValue $\sum_{p\epsilon pieces} p.pieceValue $ where $p$ is white.
+  \If {AI is playing black}
+    \State return $blackValue / whiteValue$
+  \Else
+    \State return $whiteValue / blackValue$ 
+  \EndIf
+\EndIf
+\end{algorithmic}
+\end{algorithm}
+
+For the evaluation function, a score system is made for the draughts pieces. Initially, every piece is worth 100 points. A king is worth twice as much as a normal piece. Now, for kings it is better to stay at the side of the board rather than somewhere in the middle [1]. So there are 20 points added to the score of a king when it is positioned at the side in order to give this state of position a higher score.
+For normal pieces, the defense line is valuable to keep the opponent from getting a king. So again, 20 points are added to the score of pieces positioned on the first line. Pieces further on the board are more likely to get jumped, but is also more likely to jump it self. Also, the closer it is to the opponent's side, the closer it is to become a king. For every line it is moved forward, the piece receives an extra 3 points to add to it's score. So, a maximum of 24 points can be added, when the piece is one row from becoming a king.\\
+After evaluating each piece value, the final value of the state is calculated as the ratio between the value of the AI's pieces and the value of the opponent's pieces. This will give a better approximation to the value of the state than taking the difference between the two, since for example the state with 5 pieces to 1 is much strong than with 20 pieces to 16, although the difference is the same. 
 
 \section{Results}
 blablabla
 
 \section{References}
-blablabla
+[1] http://www.checkerstip.com/handling-a-king-piece-in.html
 
 \section{Contribution}
-blablabla
+Martijn Gösgens: Alpha-Beta seach, iterative deepening.
+Dominique Sommers: I designed the evaluation function for the AI. In order to do this, I studied good draughts patterns and searched for strong positions of particular pieces. These could be defended pieces (having a piece behind them, so they can not be jumped), defending pieces (having a piece in front of them), elbow pattern (pieces defending and being defended). However, I decided to keep the evaluation simple, since the method is called many times.
 
 \section{Manual}
 blablabla
