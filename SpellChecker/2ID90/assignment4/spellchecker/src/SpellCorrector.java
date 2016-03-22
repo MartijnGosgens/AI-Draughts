@@ -42,39 +42,39 @@ public class SpellCorrector {
         // Find all candidate words from insertions.
         for (int i = 0; i < word.length() + 1; ++ i) {
             for (char c : ALPHABET) {
-                String possibleCandidate = insert(word, i, c);
-                if (cr.inVocabulary(possibleCandidate)) {
-                    mapOfWords.put(possibleCandidate, 
-                            noisyChannelProbability(word, possibleCandidate));
+                Correction possibleCandidate = insert(word, i, c);
+                if (possibleCandidate != null) {
+                    mapOfWords.put(possibleCandidate.getCorrect(), 
+                            possibleCandidate.getProbability());
                 }
             }
         }
         
         // Find all candidate words from deletions.
         for (int i = 0; i < word.length(); ++ i) {
-            String possibleCandidate = delete(word, i);
-            if (cr.inVocabulary(word)) {
-                    mapOfWords.put(possibleCandidate, 
-                            noisyChannelProbability(word, possibleCandidate));
+            Correction possibleCandidate = delete(word, i);
+            if (possibleCandidate != null) {
+                mapOfWords.put(possibleCandidate.getCorrect(), 
+                        possibleCandidate.getProbability());
             }
         }
         
         // Find all candidate words from transpositions.
         for (int i = 0; i < word.length() - 1; ++ i) {
-            String possibleCandidate = transpose(word, i);
-            if (cr.inVocabulary(word)) {
-                    mapOfWords.put(possibleCandidate, 
-                            noisyChannelProbability(word, possibleCandidate));
+            Correction possibleCandidate = transpose(word, i);
+            if (possibleCandidate != null) {
+                mapOfWords.put(possibleCandidate.getCorrect(), 
+                        possibleCandidate.getProbability());
             }
         }
         
         // Find all candidate words from substitutions.
         for (int i = 0; i < word.length(); ++ i) {
             for (char c : ALPHABET) {
-                String possibleCandidate = substitute(word, i, c);
-                if (cr.inVocabulary(possibleCandidate)) {
-                    mapOfWords.put(possibleCandidate, 
-                            noisyChannelProbability(word, possibleCandidate));
+                Correction possibleCandidate = substitute(word, i, c);
+                if (possibleCandidate != null) {
+                    mapOfWords.put(possibleCandidate.getCorrect(), 
+                            possibleCandidate.getProbability());
                 }
             }
         }
@@ -83,68 +83,93 @@ public class SpellCorrector {
     }        
 
     /**
-     * Inserts {@code insertion} at the {@code index}-th position of 
-     * {@code original}.
-     * @param original The original word
-     * @param index The index where the character needs to be inserted.
-     * @param insertion The character to be inserted.
-     * @return The new string.
+     * 
      */
-    String insert(String original, int index, char insertion) {
-        return original.substring(0, index)
+    Correction insert(String original, int index, char insertion) {
+        String correct = original.substring(0, index)
                 + insertion 
                 + (index >= original.length() ? "" : original.substring(index));
+        if (cr.inVocabulary(correct)) {
+            double probability = cmr.getConfusionCount(" ", ""+insertion);
+            return new Correction(original, correct, probability);
+        } else {
+            return null;
+        }
     }
     
     /**
-     * Deletes the character at {@code index} from {@code original}.
-     * @param original
-     * @param index
-     * @return 
+     * 
      */
-    String delete(String original, int index) {
-        return original.substring(0,index) 
+    Correction delete(String original, int index) {
+        String correct = original.substring(0, index)
                 + (index < original.length() ? original.substring(index + 1) : "");
+        if (cr.inVocabulary(correct)) {
+            double probability = cmr.getConfusionCount("" + original.charAt(index), " ");
+            return new Correction(original, correct, probability);
+        } else {
+            return null;
+        }
     }
     
     /**
-     * Swaps the characters at {@code index} and {@code index + 1} from 
-     * {@code original}.
-     * @param original
-     * @param index
-     * @return 
+     * 
      */
-    String transpose(String original, int index) {
-        return original.substring(0, index)
+    Correction transpose(String original, int index) {
+        String correct = original.substring(0, index)
                 + original.charAt(index + 1)
                 + original.charAt(index)
                 + (index >= original.length() ? "" : original.substring(index + 2));
+        if (cr.inVocabulary(correct)) {
+            double probability = cmr.getConfusionCount(
+                    original.substring(index, index + 2), 
+                    original.charAt(index + 1)+""+ original.charAt(index));
+            return new Correction(original, correct, probability);
+        } else {
+            return null;
+        }
     }
     
     /**
-     * Substitutes the character at {@code index} from {@code original} with
-     * {@code insertion}.
-     * @param original
-     * @param index
-     * @param insertion
-     * @return 
+     * 
      */
-    String substitute(String original, int index, char insertion) {
-        return original.substring(0, index)
+    Correction substitute(String original, int index, char insertion) {
+        String correct = original.substring(0, index)
                 + insertion 
                 + (index < original.length() ? original.substring(index + 1) : "");
+        if (cr.inVocabulary(correct)) {
+            double probability = cmr.getConfusionCount(
+                    ""+original.charAt(index), 
+                    ""+insertion);
+            return new Correction(original, correct, probability);
+        } else {
+            return null;
+        }
     }
     
     /**
-     * Gives P({@code observation}|{@code word}), the chance that 
-     * {@code observation} exits the noisy channel while {@code word} has
-     * entered it.
-     * @param observation The observed word
-     * @param word The original word
-     * @return The probability that {@code observed} has been typed while
-     * meaning to type {@code word}.
+     * 
      */
     Double noisyChannelProbability(String observation, String word) {
         return 0d;
+    }
+}
+
+class Correction {
+    String error;
+    String correct;
+    double probability;
+    
+    String getCorrect() {
+        return correct;
+    }
+    
+    double getProbability() {
+        return probability;
+    }
+    
+    public Correction(String e, String c, double p) {
+        error = e;
+        correct = c;
+        probability = p;
     }
 }
