@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Collections;
 
 public class CorpusReader 
 {
@@ -116,10 +117,47 @@ public class CorpusReader
         }
         
         double smoothedCount = 0.0;
-        
-        /** ADD CODE HERE **/
-        
+        int c = getNGramCount(NGram);
+        // good Turing smoothing:
+        // c* = N_1 / N
+        if (c == 0) {
+            System.out.println("!inVocabulary");
+            smoothedCount = (double) getFreqOfFreqC(1, 0) / getAllCount();
+        } 
+        // c* = ((c+1) * N_c+1) / N_c
+        // where c is the frequency of NGram and
+        // N_c is the frequency of frequency c
+        else {
+            int Nc = 0;
+            int d = 1;
+            int Nc1 = 0;
+            Nc = getFreqOfFreqC(c, 0);
+            while (Nc1 == 0){
+                Nc1 = getFreqOfFreqC(c, d);
+                d++;
+            }
+//            System.out.println("c: " + c + " ::: Nc: " + Nc + " ::: Nc1: " + Nc1 + " ::: c+d: " + (c+(d-1)));
+            smoothedCount = (double) ((c + 1) * Nc1) / Nc;
+        }
         
         return smoothedCount;        
+    }
+    
+    private int getFreqOfFreqC(int c, int d){
+        int result = 0;
+        for (int value : ngrams.values()) {
+            if (value == c + d) {
+                result++;
+            }
+        }
+        return result;
+    }
+    
+    private int getAllCount(){
+        int result = 0;
+        for (int value : ngrams.values()){
+            result += value;
+        }
+        return result;
     }
 }
