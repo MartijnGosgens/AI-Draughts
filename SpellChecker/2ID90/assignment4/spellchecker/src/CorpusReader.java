@@ -118,15 +118,23 @@ public class CorpusReader
         
         double smoothedCount = 0.0;
         int c = getNGramCount(NGram);
-        // good Turing smoothing:
-        // c* = N_1 / N
+       /*(TODO:) - Bij het woord met grootste frequency werkt het niet, want er
+        * is er geen die hoger is. - Niet accuraat als de gap tussen C en C+1 
+        * groot is.
+        */
+        /* good Turing smoothing:
+        * c* = N_1 / N
+        * with N_1 is the frequency of words with frequency 1 and
+        * N is the sum of frequencies of all words
+        */
         if (c == 0) {
             System.out.println("!inVocabulary");
             smoothedCount = (double) getFreqOfFreqC(1, 0) / getAllCount();
         } 
-        // c* = ((c+1) * N_c+1) / N_c
-        // where c is the frequency of NGram and
-        // N_c is the frequency of frequency c
+        /* c* = ((c+1) * N_c+1) / N_c
+        * where c is the frequency of NGram and
+        * N_c is the frequency of frequency c
+        */
         else {
             int Nc = 0;
             int d = 1;
