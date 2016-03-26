@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -16,6 +17,63 @@ public class SpellCorrector {
         this.cmr = cmr;
     }
     
+    private SentenceProbabilityPair findCorrect(ArrayList<String> previousWords,
+                                                ArrayList<String> nextWords,
+                                                double currentProbability,
+                                                int correctionsMade) {
+        if (currentProbability == 0) {
+            // Return an empty sentence with zero probability
+            return new SentenceProbabilityPair("",0);
+        } else if (nextWords.size() == 0) {
+            // Corrected all words, return the sentence
+            String sentence = "";
+            for (String word : previousWords)
+                sentence += word + " ";
+            currentProbability *= cr.conditionalProbability("EoS", 
+                    previousWords.get(previousWords.size()-1));
+            return new SentenceProbabilityPair(sentence.trim(), currentProbability);
+        } else if (correctionsMade == 2) {
+            // Maximal number of corrections made, return the whole sentence with
+            // its probability.
+            String sentence = "";
+            for (String word : previousWords)
+                sentence += word + " ";
+            
+            // Adjust probbility and add the rest of the words to the sentence
+            String lastWord = previousWords.get(previousWords.size()-1);
+            for (String nextWord : nextWords) {
+                currentProbability *= cr.conditionalProbability(nextWord, lastWord);
+                lastWord = nextWord;
+                sentence += lastWord + " ";
+            }
+            currentProbability *= cr.conditionalProbability("EoS", nextWords.get(nextWords.size()-1));
+            return new SentenceProbabilityPair(sentence.trim(), currentProbability);
+        } else {
+            String nextWord = nextWords.get(0);
+            String lastWord = previousWords.get(previousWords.size()-1);
+            SentenceProbabilityPair best = new SentenceProbabilityPair("",0);
+            
+            for (Entry<String, Double> candidate : getCandidateWords(nextWord).entrySet()) {
+                double nextProbability = currentProbability * candidate.getValue()
+                        * cr.conditionalProbability(candidate.getKey(), lastWord);
+                previousWords.add(candidate.getKey());
+                nextWords.remove(nextWord);
+                SentenceProbabilityPair candidateSentence;
+                candidateSentence = findCorrect(
+                        previousWords, nextWords, nextProbability,
+                        correctionsMade - (candidate.equals(nextWord) ? 0 : 1));
+                
+                if (candidateSentence.probability > best.probability)
+                    best = candidateSentence;
+                
+                // Undo
+                nextWords.add(0, nextWord);
+                previousWords.remove(candidate.getKey());
+            }
+            return best;
+        }
+    }
+    
     public String correctPhrase(String phrase)
     {
         if(phrase == null || phrase.length() == 0)
@@ -27,19 +85,23 @@ public class SpellCorrector {
         String finalSuggestion = "";
         
         /** CODE TO BE ADDED **/
-        for (String word : words){
-            Map<String,Double> candidateWords = getCandidateWords(word);
-            String maxCandidate = word;
-            Double maxProb = null;
-            for (Entry<String,Double> entry : candidateWords.entrySet()) {
-                if (maxProb == null || entry.getValue().compareTo(maxProb) > 0) {
-                    maxCandidate = entry.getKey();
-                    maxProb = entry.getValue();
-                }
-            }
-            finalSuggestion += " " + maxCandidate;
-        }
-        return finalSuggestion.trim();
+        ArrayList<String> start = new ArrayList();
+        start.add("SoS");
+        SentenceProbabilityPair bestCorrection = findCorrect(start, new ArrayList(), 1d, 0);
+        return bestCorrection.getSentence();
+//        for (String word : words){
+//            Map<String,Double> candidateWords = getCandidateWords(word);
+//            String maxCandidate = word;
+//            Double maxProb = null;
+//            for (Entry<String,Double> entry : candidateWords.entrySet()) {
+//                if (maxProb == null || entry.getValue().compareTo(maxProb) > 0) {
+//                    maxCandidate = entry.getKey();
+//                    maxProb = entry.getValue();
+//                }
+//            }
+//            finalSuggestion += " " + maxCandidate;
+//        }
+//        return finalSuggestion.trim();
     }    
       
     /** returns a map with candidate words and their noisy channel probability. **/
@@ -213,5 +275,23 @@ class Correction {
         error = e;
         correct = c;
         probability = p;
+    }
+}
+
+class SentenceProbabilityPair {
+    String sentence;
+    double probability;
+    
+    public SentenceProbabilityPair(String s, double p) {
+        sentence = s;
+        probability = p;
+    }
+    
+    public String getSentence() {
+        return sentence;
+    }
+    
+    public double getProbability() {
+        return probability;
     }
 }

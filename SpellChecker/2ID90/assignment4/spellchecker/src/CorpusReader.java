@@ -166,4 +166,18 @@ public class CorpusReader
         }
         return result;
     }
+    
+    /**
+     * Returns the conditional probability that {@code next} will follow
+     * {@code previous}.
+     */
+    public double conditionalProbability(String next, String previous) {
+        // Smoothening enters an infinite loop every time it sees "the".
+//        double occurrencePrevious = getSmoothedCount(previous);
+//        double occurrenceFollowUp = getSmoothedCount(previous + " " + next);
+//        return occurrenceFollowUp / occurrencePrevious;
+        double total = getNGramCount(previous);
+        double followUp = getNGramCount(previous + " " + next);
+        return followUp / total;
+    }
 }

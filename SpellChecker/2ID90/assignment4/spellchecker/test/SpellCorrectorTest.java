@@ -24,6 +24,7 @@ public class SpellCorrectorTest {
     public SpellCorrectorTest() {
         try {
         instance = new SpellCorrector(new CorpusReader(), new ConfusionMatrixReader());
+        new CorpusReader().getSmoothedCount("the");
         } catch(IOException e) {
             fail("could not read file");
         }
