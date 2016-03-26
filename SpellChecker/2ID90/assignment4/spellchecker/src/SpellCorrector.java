@@ -88,7 +88,13 @@ public class SpellCorrector {
                     mapOfWords.put(possibleCandidate.getCorrect(), 
                             possibleCandidate.getProbability());
                 }
+                
             }
+        }
+        
+        // Add the word itself if it is contained in the dictionary.
+        if (cr.inVocabulary(word)) {
+            mapOfWords.put(word, 250.0d);
         }
         
         return mapOfWords;
@@ -101,8 +107,13 @@ public class SpellCorrector {
         String correct = original.substring(0, index)
                 + insertion 
                 + (index >= original.length() ? "" : original.substring(index));
+//        if (correct.equals(original))
+//            System.out.println("Corrected "+original+" to itself insert"+index+""+insertion);
         if (cr.inVocabulary(correct)) {
-            double probability = cmr.getConfusionCount(" ", ""+insertion);
+            double probability = cmr.getConfusionCount((index>0 ? original.charAt(index-1)+"": " "), 
+                    (index>0 ? original.charAt(index-1)+"": " ")+insertion);
+//            if (probability==0.0d)
+//                System.out.println("insertion not found:"+" | "+insertion);
             return new Correction(original, correct, probability);
         } else {
             return null;
@@ -115,8 +126,13 @@ public class SpellCorrector {
     Correction delete(String original, int index) {
         String correct = original.substring(0, index)
                 + (index < original.length() ? original.substring(index + 1) : "");
+//        if (correct.equals(original))
+//            System.out.println("Corrected "+original+" to itself delete"+index);
         if (cr.inVocabulary(correct)) {
-            double probability = cmr.getConfusionCount("" + original.charAt(index), " ");
+            double probability = cmr.getConfusionCount((index > 0 ? original.charAt(index-1) : " ") + "" + original.charAt(index), 
+                    (index > 0 ? original.charAt(index-1) : " ")+"");
+//            if (probability==0.0d)
+//                System.out.println("delete not found:"+" " + original.charAt(index)+"| ");
             return new Correction(original, correct, probability);
         } else {
             return null;
@@ -131,10 +147,16 @@ public class SpellCorrector {
                 + original.charAt(index + 1)
                 + original.charAt(index)
                 + (index >= original.length() ? "" : original.substring(index + 2));
+//        if (correct.equals(original))
+//            System.out.println("Corrected "+original+" to itself transpose"+index);
         if (cr.inVocabulary(correct)) {
             double probability = cmr.getConfusionCount(
                     original.substring(index, index + 2), 
                     original.charAt(index + 1)+""+ original.charAt(index));
+            
+//            if (probability==0.0d)
+//                System.out.println("transpose not found:"+original.substring(index, index + 2)+"|" +
+//                    original.charAt(index + 1)+""+ original.charAt(index));
             return new Correction(original, correct, probability);
         } else {
             return null;
@@ -148,10 +170,16 @@ public class SpellCorrector {
         String correct = original.substring(0, index)
                 + insertion 
                 + (index < original.length() ? original.substring(index + 1) : "");
+//        if (correct.equals(original))
+//            System.out.println("Corrected "+original+" to itself substitute"+index+""+insertion);
         if (cr.inVocabulary(correct)) {
             double probability = cmr.getConfusionCount(
                     ""+original.charAt(index), 
                     ""+insertion);
+            
+//            if (probability==0.0d)
+//                System.out.println("substitute not found:"+""+original.charAt(index)+"|"+
+//                    ""+insertion);
             return new Correction(original, correct, probability);
         } else {
             return null;
