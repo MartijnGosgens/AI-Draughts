@@ -135,10 +135,9 @@ public class CorpusReader
         * N_c is the frequency of frequency c
         */
         else {
-            int Nc = 0;
+            double Nc = getFreqOfFreqC(c, 0);
             int d = 1;
             int Nc1 = 0;
-            Nc = getFreqOfFreqC(c, 0);
             while (Nc1 == 0){
                 Nc1 = getFreqOfFreqC(c, d);
                 d++;

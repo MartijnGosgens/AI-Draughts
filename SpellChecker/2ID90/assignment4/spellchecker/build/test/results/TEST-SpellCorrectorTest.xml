@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite errors="0" failures="0" hostname="s147569" name="SpellCorrectorTest" skipped="0" tests="7" time="4.998" timestamp="2016-03-26T13:16:44">
+<testsuite errors="0" failures="0" hostname="s147569" name="SpellCorrectorTest" skipped="0" tests="7" time="4.262" timestamp="2016-03-26T17:51:04">
   <properties>
     <property name="libs.jsp-compiler.javadoc" value="" />
     <property name="netbeans.autoupdate.country" value="NL" />
@@ -58,7 +58,7 @@
     <property name="libs.j2me_common_ant.maven-pom" value="" />
     <property name="libs.spring-webmvc3.0.maven-pom" value="" />
     <property name="libs.swing-layout.maven-pom" value="" />
-    <property name="sun.java.command" value="org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner SpellCorrectorTest skipNonTests=false filtertrace=true haltOnError=false haltOnFailure=false showoutput=true outputtoformatters=true logfailedtests=true threadid=0 logtestlistenerevents=true formatter=org.apache.tools.ant.taskdefs.optional.junit.BriefJUnitResultFormatter formatter=org.apache.tools.ant.taskdefs.optional.junit.XMLJUnitResultFormatter,C:\Users\s147569\Dropbox\School\Artificial Intelligence\2ID90\AI-Draughts\SpellChecker\2ID90\assignment4\spellchecker\build\test\results\TEST-SpellCorrectorTest.xml crashfile=C:\Users\s147569\Dropbox\School\Artificial Intelligence\2ID90\AI-Draughts\SpellChecker\2ID90\assignment4\spellchecker\build\junitvmwatcher360511129304714106.properties propsfile=C:\Users\s147569\Dropbox\School\Artificial Intelligence\2ID90\AI-Draughts\SpellChecker\2ID90\assignment4\spellchecker\build\junit4819134370088572553.properties" />
+    <property name="sun.java.command" value="org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner SpellCorrectorTest skipNonTests=false filtertrace=true haltOnError=false haltOnFailure=false showoutput=true outputtoformatters=true logfailedtests=true threadid=0 logtestlistenerevents=true formatter=org.apache.tools.ant.taskdefs.optional.junit.BriefJUnitResultFormatter formatter=org.apache.tools.ant.taskdefs.optional.junit.XMLJUnitResultFormatter,C:\Users\s147569\Dropbox\School\Artificial Intelligence\2ID90\AI-Draughts\SpellChecker\2ID90\assignment4\spellchecker\build\test\results\TEST-SpellCorrectorTest.xml crashfile=C:\Users\s147569\Dropbox\School\Artificial Intelligence\2ID90\AI-Draughts\SpellChecker\2ID90\assignment4\spellchecker\build\junitvmwatcher1076189386053773072.properties propsfile=C:\Users\s147569\Dropbox\School\Artificial Intelligence\2ID90\AI-Draughts\SpellChecker\2ID90\assignment4\spellchecker\build\junit4649874999965621377.properties" />
     <property name="build.classes.dir" value="build/classes" />
     <property name="netbeans.accept_license_class" value="org.netbeans.license.AcceptLicense" />
     <property name="build.sysclasspath" value="ignore" />
@@ -99,7 +99,7 @@
     <property name="javac.debug" value="true" />
     <property name="javadoc.splitindex" value="true" />
     <property name="file.separator" value="\" />
-    <property name="javac.includesfile.binary" value="C:\Users\s147569\Dropbox\School\Artificial Intelligence\2ID90\AI-Draughts\SpellChecker\2ID90\assignment4\spellchecker\null1932896257" />
+    <property name="javac.includesfile.binary" value="C:\Users\s147569\Dropbox\School\Artificial Intelligence\2ID90\AI-Draughts\SpellChecker\2ID90\assignment4\spellchecker\null984884271" />
     <property name="libs.junit_4.maven-pom" value="" />
     <property name="mkdist.disabled" value="false" />
     <property name="javac.test.processorpath" value=":build/classes:C:\Program Files\NetBeans 8.1\platform\modules\ext\junit-4.12.jar:C:\Program Files\NetBeans 8.1\platform\modules\ext\hamcrest-core-1.3.jar" />
@@ -405,18 +405,18 @@
     <property name="awt.toolkit" value="sun.awt.windows.WToolkit" />
     <property name="libs.javaee-web-api-7.0.javadoc" value="C:\Program Files\NetBeans 8.1\enterprise\docs\javaee-doc-api.jar" />
   </properties>
-  <testcase classname="SpellCorrectorTest" name="testSubstitute" time="0.001" />
-  <testcase classname="SpellCorrectorTest" name="testGetCandidateWords" time="0.009" />
+  <testcase classname="SpellCorrectorTest" name="testSubstitute" time="0.002" />
+  <testcase classname="SpellCorrectorTest" name="testGetCandidateWords" time="0.008" />
   <testcase classname="SpellCorrectorTest" name="testCorrectPhrase" time="0.0" />
   <testcase classname="SpellCorrectorTest" name="testDelete" time="0.0" />
-  <testcase classname="SpellCorrectorTest" name="testInsert" time="0.001" />
+  <testcase classname="SpellCorrectorTest" name="testInsert" time="0.0" />
   <testcase classname="SpellCorrectorTest" name="testTranspose" time="0.0" />
-  <testcase classname="SpellCorrectorTest" name="testNoisyChannelProbability" time="0.0" />
+  <testcase classname="SpellCorrectorTest" name="testNoisyChannelProbability" time="0.001" />
   <system-out><![CDATA[Get candidates of word: this
 	his 2.0
 	thais 15.0
 	thus 47.0
-	this 500.0
+	this 250.0
 	whis 19.0
 	ths 17.0
 	tris 3.0
@@ -424,9 +424,9 @@
 Get candidates of word: essay
 	essays 17.0
 	assay 388.0
-	essay 500.0
+	essay 250.0
 Get candidates of word: allowed
-	allowed 500.0
+	allowed 250.0
 	hallowed 6.0
 	wallowed 24.0
 Get candidates of word: us
@@ -455,7 +455,7 @@ Get candidates of word: us
 	up 7.0
 	ws 2.0
 	ur 14.0
-	us 500.0
+	us 250.0
 	ut 15.0
 	ugs 1.0
 	ss 0.0
@@ -523,7 +523,7 @@ Get candidates of word: to
 	tm 0.0
 	tho 49.0
 	tn 0.0
-	to 500.0
+	to 250.0
 	tp 14.0
 	tr 2.0
 	po 6.0
@@ -531,7 +531,7 @@ Get candidates of word: to
 Get candidates of word: measure
 	measured 74.0
 	measures 223.0
-	measure 500.0
+	measure 250.0
 Get candidates of word: a
 	ya 0.0
 	ua 2.0
@@ -571,7 +571,7 @@ Get candidates of word: a
 	ka 6.0
 	ga 7.0
 	ca 41.0
-	a 500.0
+	a 250.0
 	b 0.0
 	c 7.0
 	d 1.0
@@ -607,7 +607,7 @@ Get candidates of word: wide
 	wider 237.0
 	side 3.0
 	aide 2.0
-	wide 500.0
+	wide 250.0
 	wife 0.0
 	fide 0.0
 	ride 6.0
@@ -619,7 +619,7 @@ Get candidates of word: wide
 	wides 223.0
 	wine 3.0
 Get candidates of word: variety
-	variety 500.0
+	variety 250.0
 Get candidates of word: of
 	ff 0.0
 	df 3.0
@@ -630,7 +630,7 @@ Get candidates of word: of
 	oc 0.0
 	od 3.0
 	oe 1.0
-	of 500.0
+	of 250.0
 	og 5.0
 	oh 2.0
 	oi 0.0
@@ -660,7 +660,7 @@ Get candidates of word: of
 	oft 8.0
 Get candidates of word: conditions
 	condition 156.0
-	conditions 500.0
+	conditions 250.0
 Get candidates of word: hme
 	heme 20.0
 	hm 17.0

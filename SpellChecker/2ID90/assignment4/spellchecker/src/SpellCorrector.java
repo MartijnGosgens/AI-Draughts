@@ -189,7 +189,9 @@ public class SpellCorrector {
     /**
      * 
      */
-    Double noisyChannelProbability(String observation, String word) {
+    Double noisyChannelProbability(String error, String correct) {
+        double correctionCount = cmr.getConfusionCount(error, correct);
+        
         return 0d;
     }
 }
