@@ -1,6 +1,7 @@
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 
 public class SpellCorrector {
     final private CorpusReader cr;
@@ -26,7 +27,18 @@ public class SpellCorrector {
         String finalSuggestion = "";
         
         /** CODE TO BE ADDED **/
-        
+        for (String word : words){
+            Map<String,Double> candidateWords = getCandidateWords(word);
+            String maxCandidate = word;
+            Double maxProb = null;
+            for (Entry<String,Double> entry : candidateWords.entrySet()) {
+                if (maxProb == null || entry.getValue().compareTo(maxProb) > 0) {
+                    maxCandidate = entry.getKey();
+                    maxProb = entry.getValue();
+                }
+            }
+            finalSuggestion += " " + maxCandidate;
+        }
         return finalSuggestion.trim();
     }    
       
