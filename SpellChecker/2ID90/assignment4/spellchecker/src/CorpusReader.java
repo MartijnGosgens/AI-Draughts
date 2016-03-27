@@ -3,9 +3,15 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 public class CorpusReader 
 {
@@ -14,11 +20,18 @@ public class CorpusReader
     
     private HashMap<String,Integer> ngrams;
     private Set<String> vocabulary;
+    
+    private int maxFreq;
+    private int sumCounts;
+    private TreeMap<Integer, Integer> freqOfFreq;
         
     public CorpusReader() throws IOException
     {  
         readNGrams();
         readVocabulary();
+        makeFreqOfFreqTreeMap();
+        maxFreq = freqOfFreq.lastKey();
+        sumCounts = getAllCount();
     }
     
     /**
@@ -106,8 +119,13 @@ public class CorpusReader
     public boolean inVocabulary(String word) 
     {
        return vocabulary.contains(word);
-    }    
+    }
     
+    /**
+     * Calculates the smoothed count of string {@code NGram}.
+     * @param NGram
+     * @return Smoothed count
+     */
     public double getSmoothedCount(String NGram)
     {
         if(NGram == null || NGram.length() == 0)
@@ -117,48 +135,76 @@ public class CorpusReader
         
         double smoothedCount = 0.0;
         int c = getNGramCount(NGram);
-       /*(TODO:) - Bij het woord met grootste frequency werkt het niet, want er
-        * is er geen die hoger is. - Niet accuraat als de gap tussen C en C+1 
-        * groot is.
-        */
-        /* good Turing smoothing:
-        * c* = N_1 / N
-        * with N_1 is the frequency of words with frequency 1 and
-        * N is the sum of frequencies of all words
-        */
-        if (c == 0) {
-            System.out.println("!inVocabulary");
-            smoothedCount = (double) getFreqOfFreqC(1, 0) / getAllCount();
-        } 
-        /* c* = ((c+1) * N_c+1) / N_c
-        * where c is the frequency of NGram and
-        * N_c is the frequency of frequency c
-        */
-        else {
-            double Nc = getFreqOfFreqC(c, 0);
-            int d = 1;
-            int Nc1 = 0;
-            while (Nc1 == 0){
-                Nc1 = getFreqOfFreqC(c, d);
-                d++;
-            }
-//            System.out.println("c: " + c + " ::: Nc: " + Nc + " ::: Nc1: " + Nc1 + " ::: c+d: " + (c+(d-1)));
-            smoothedCount = (double) ((c + 1) * Nc1) / Nc;
-        }
         
-        return smoothedCount;        
+        // good Turing smoothing:
+        if (c == 0) {
+            /* c* = N_1 / N
+            * with N_1 is the frequency of words with frequency 1 and
+            * N is the sum of frequencies of all words
+            */
+            smoothedCount = (double) freqOfFreq.get(1) / sumCounts;
+        } else if (c == maxFreq) {
+            /* If the word ngram has the highest frequency, divide by the sum of
+            * frequencies of all words.      
+            */
+            smoothedCount = (double) c / sumCounts;
+        } else {
+            int Nc = freqOfFreq.get(c);
+            if (freqOfFreq.ceilingKey(c) == null){
+                /* ngram has highest frequency so there exists no next.
+                * smoothed count will be the frequency divided by sum of all 
+                * counts.
+                */
+                smoothedCount = (double) c / sumCounts;
+            } else {
+                /* c* = ((c+1) * N_c+1) / N_c
+                * where c is the frequency of NGram and
+                * N_c is the frequency of frequency c
+                */
+                int nextC = freqOfFreq.ceilingKey(c);
+                int Nc1 = freqOfFreq.get(nextC);
+
+                smoothedCount = (double) ((c + (nextC - c)) * Nc1) / Nc;
+            }
+        }
+        return smoothedCount;
     }
     
-    private int getFreqOfFreqC(int c, int d){
+    /**
+     * Construct the tree map with frequencies as keys and freq. of freq. 
+     * as values.
+     */
+    private void makeFreqOfFreqTreeMap(){
+        freqOfFreq = new TreeMap<>();
+        Collection values = ngrams.values();
+        Iterator iter = values.iterator();
+        while(iter.hasNext()){
+            int value = (int) iter.next();
+            if (!freqOfFreq.containsKey(value)){
+                freqOfFreq.put(value, getFreqOfFreqC(value));
+            }
+        }
+    }
+    
+    /**
+     * Returns the freq. of the frequency {@code c}.
+     * @param c
+     * @return freq. of {@code c}
+     */
+    private int getFreqOfFreqC(int c){
         int result = 0;
         for (int value : ngrams.values()) {
-            if (value == c + d) {
+            if (value == c) {
                 result++;
             }
         }
         return result;
     }
     
+    /**
+     * Returns the sum of the frequencies of all words in the vocabulary.
+     * @return sum
+     */
     private int getAllCount(){
         int result = 0;
         for (int value : ngrams.values()){
@@ -173,11 +219,15 @@ public class CorpusReader
      */
     public double conditionalProbability(String next, String previous) {
         // Smoothening enters an infinite loop every time it sees "the".
-//        double occurrencePrevious = getSmoothedCount(previous);
-//        double occurrenceFollowUp = getSmoothedCount(previous + " " + next);
-//        return occurrenceFollowUp / occurrencePrevious;
-        double total = getNGramCount(previous);
-        double followUp = getNGramCount(previous + " " + next);
-        return followUp / total;
+        double occurrencePrevious = getSmoothedCount(previous);
+        double occurrenceFollowUp = getSmoothedCount(previous + " " + next);
+        System.out.println("Smoothed:::: prev :: " + previous + ":::" + occurrencePrevious);
+        System.out.println("Smoothed:::: prevnext :: " + previous + " " + next + ":::" + occurrenceFollowUp);
+        return occurrenceFollowUp / occurrencePrevious;
+//        double total = getNGramCount(previous);
+//        double followUp = getNGramCount(previous + " " + next);
+//        System.out.println("Smoothed:::: prev :: " + previous + ":::" + total + ":::" + i++);
+//        System.out.println("Smoothed:::: prevnext :: " + previous + " " + next + ":::" + followUp + ":::" + i++);
+//        return followUp / total;
     }
 }
