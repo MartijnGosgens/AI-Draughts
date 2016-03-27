@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite errors="0" failures="0" hostname="s147569" name="SpellCorrectorTest" skipped="0" tests="7" time="51.127" timestamp="2016-03-27T13:11:04">
+<testsuite errors="0" failures="0" hostname="s147569" name="SpellCorrectorTest" skipped="0" tests="7" time="4.057" timestamp="2016-03-27T15:42:09">
   <properties>
     <property name="libs.jsp-compiler.javadoc" value="" />
     <property name="netbeans.autoupdate.country" value="NL" />
@@ -58,7 +58,7 @@
     <property name="libs.j2me_common_ant.maven-pom" value="" />
     <property name="libs.spring-webmvc3.0.maven-pom" value="" />
     <property name="libs.swing-layout.maven-pom" value="" />
-    <property name="sun.java.command" value="org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner SpellCorrectorTest skipNonTests=false filtertrace=true haltOnError=false haltOnFailure=false showoutput=true outputtoformatters=true logfailedtests=true threadid=0 logtestlistenerevents=true formatter=org.apache.tools.ant.taskdefs.optional.junit.BriefJUnitResultFormatter formatter=org.apache.tools.ant.taskdefs.optional.junit.XMLJUnitResultFormatter,C:\Users\s147569\Dropbox\School\Artificial Intelligence\2ID90\AI-Draughts\SpellChecker\2ID90\assignment4\spellchecker\build\test\results\TEST-SpellCorrectorTest.xml crashfile=C:\Users\s147569\Dropbox\School\Artificial Intelligence\2ID90\AI-Draughts\SpellChecker\2ID90\assignment4\spellchecker\build\junitvmwatcher7575104316087697249.properties propsfile=C:\Users\s147569\Dropbox\School\Artificial Intelligence\2ID90\AI-Draughts\SpellChecker\2ID90\assignment4\spellchecker\build\junit1702192007364268563.properties" />
+    <property name="sun.java.command" value="org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner SpellCorrectorTest skipNonTests=false filtertrace=true haltOnError=false haltOnFailure=false showoutput=true outputtoformatters=true logfailedtests=true threadid=0 logtestlistenerevents=true formatter=org.apache.tools.ant.taskdefs.optional.junit.BriefJUnitResultFormatter formatter=org.apache.tools.ant.taskdefs.optional.junit.XMLJUnitResultFormatter,C:\Users\s147569\Dropbox\School\Artificial Intelligence\2ID90\AI-Draughts\SpellChecker\2ID90\assignment4\spellchecker\build\test\results\TEST-SpellCorrectorTest.xml crashfile=C:\Users\s147569\Dropbox\School\Artificial Intelligence\2ID90\AI-Draughts\SpellChecker\2ID90\assignment4\spellchecker\build\junitvmwatcher278699657121326776.properties propsfile=C:\Users\s147569\Dropbox\School\Artificial Intelligence\2ID90\AI-Draughts\SpellChecker\2ID90\assignment4\spellchecker\build\junit3535108151947977723.properties" />
     <property name="build.classes.dir" value="build/classes" />
     <property name="netbeans.accept_license_class" value="org.netbeans.license.AcceptLicense" />
     <property name="build.sysclasspath" value="ignore" />
@@ -99,7 +99,7 @@
     <property name="javac.debug" value="true" />
     <property name="javadoc.splitindex" value="true" />
     <property name="file.separator" value="\" />
-    <property name="javac.includesfile.binary" value="C:\Users\s147569\Dropbox\School\Artificial Intelligence\2ID90\AI-Draughts\SpellChecker\2ID90\assignment4\spellchecker\null1868754138" />
+    <property name="javac.includesfile.binary" value="C:\Users\s147569\Dropbox\School\Artificial Intelligence\2ID90\AI-Draughts\SpellChecker\2ID90\assignment4\spellchecker\null286130700" />
     <property name="libs.junit_4.maven-pom" value="" />
     <property name="mkdist.disabled" value="false" />
     <property name="javac.test.processorpath" value=":build/classes:C:\Program Files\NetBeans 8.1\platform\modules\ext\junit-4.12.jar:C:\Program Files\NetBeans 8.1\platform\modules\ext\hamcrest-core-1.3.jar" />
@@ -406,288 +406,177 @@
     <property name="awt.toolkit" value="sun.awt.windows.WToolkit" />
     <property name="libs.javaee-web-api-7.0.javadoc" value="C:\Program Files\NetBeans 8.1\enterprise\docs\javaee-doc-api.jar" />
   </properties>
-  <testcase classname="SpellCorrectorTest" name="testSubstitute" time="0.0" />
-  <testcase classname="SpellCorrectorTest" name="testGetCandidateWords" time="0.015" />
+  <testcase classname="SpellCorrectorTest" name="testSubstitute" time="0.002" />
+  <testcase classname="SpellCorrectorTest" name="testGetCandidateWords" time="0.087" />
   <testcase classname="SpellCorrectorTest" name="testCorrectPhrase" time="0.0" />
   <testcase classname="SpellCorrectorTest" name="testDelete" time="0.0" />
   <testcase classname="SpellCorrectorTest" name="testInsert" time="0.0" />
   <testcase classname="SpellCorrectorTest" name="testTranspose" time="0.0" />
   <testcase classname="SpellCorrectorTest" name="testNoisyChannelProbability" time="0.0" />
-  <system-out><![CDATA[Count: 5174.0
-Count: 5174.0
-Get candidates of word: this
-	his 2.0
-	thais 15.0
-	thus 47.0
-	this 250.0
-	whis 19.0
-	ths 17.0
-	tris 3.0
-	thin 6.0
-Get candidates of word: essay
-	essays 17.0
-	assay 388.0
-	essay 250.0
-Get candidates of word: allowed
-	allowed 250.0
-	hallowed 6.0
-	wallowed 24.0
-Get candidates of word: us
-	bus 14.0
-	rs 4.0
-	eus 20.0
-	usa 16.0
-	ps 0.0
-	usc 27.0
-	ns 2.0
-	use 74.0
-	hs 0.0
-	ous 5.0
-	ua 11.0
-	fs 0.0
-	usm 1.0
-	uso 30.0
-	bs 0.0
-	ug 0.0
-	uh 1.0
-	usu 21.0
-	uk 0.0
-	ul 27.0
-	um 0.0
-	un 6.0
-	up 7.0
-	ws 2.0
-	ur 14.0
-	us 250.0
-	ut 15.0
-	ugs 1.0
-	ss 0.0
-	uu 0.0
-	uv 0.0
-	su 11.0
-	os 43.0
-	ms 0.0
-	is 64.0
-	gs 0.0
-	es 44.0
-	cs 0.0
-	as 20.0
-	s 11.0
-	u 19.0
-	ups 0.0
-	vs 0.0
-	ts 0.0
-Get candidates of word: to
-	tv 0.0
-	lo 14.0
-	tw 0.0
-	ty 18.0
-	ho 5.0
-	do 42.0
-	yo 7.0
-	mo 9.0
-	tao 24.0
-	eo 7.0
-	ao 3.0
-	wto 24.0
-	yto 0.0
-	zo 6.0
-	ro 11.0
-	no 5.0
-	fo 5.0
-	toe 8.0
-	two 4.0
-	bo 4.0
-	tok 0.0
-	ton 70.0
-	tom 9.0
-	top 20.0
-	too 26.0
-	tot 13.0
-	wo 19.0
-	tos 20.0
-	so 37.0
-	tow 5.0
-	toy 1.0
-	ko 0.0
-	go 19.0
-	co 9.0
-	ta 91.0
-	tb 1.0
-	o 2.0
-	tc 1.0
-	td 3.0
-	te 116.0
-	tg 0.0
-	t 23.0
-	th 0.0
-	ti 25.0
-	tk 2.0
-	tm 0.0
-	tho 49.0
-	tn 0.0
-	to 250.0
-	tp 14.0
-	tr 2.0
-	po 6.0
-	ts 4.0
-Get candidates of word: measure
-	measured 74.0
-	measures 223.0
-	measure 250.0
-Get candidates of word: a
-	ya 0.0
-	ua 2.0
-	qa 0.0
-	ma 16.0
-	ea 20.0
-	aa 0.0
-	ab 7.0
-	ad 21.0
-	ae 3.0
-	af 5.0
-	ag 18.0
-	ah 8.0
-	ai 61.0
-	ak 4.0
-	va 1.0
-	al 43.0
-	am 5.0
-	an 53.0
-	ao 0.0
-	ra 28.0
-	ap 9.0
-	ar 98.0
-	as 28.0
-	na 5.0
-	at 53.0
-	au 62.0
-	av 1.0
-	ja 3.0
-	ax 0.0
-	ay 2.0
-	az 0.0
-	fa 20.0
-	ba 14.0
-	wa 24.0
-	sa 26.0
-	ka 6.0
-	ga 7.0
-	ca 41.0
-	a 250.0
-	b 0.0
-	c 7.0
-	d 1.0
-	e 342.0
-	f 0.0
-	g 0.0
-	h 2.0
-	i 118.0
-	j 0.0
-	k 1.0
-	l 0.0
-	ta 6.0
-	m 0.0
-	n 3.0
-	o 76.0
-	p 0.0
-	pa 17.0
-	q 0.0
-	r 1.0
-	s 35.0
-	t 9.0
-	la 22.0
-	u 9.0
-	v 0.0
-	w 1.0
-	x 0.0
-	ha 6.0
-	y 5.0
-	z 0.0
-	da 31.0
-Get candidates of word: wide
-	tide 3.0
-	wider 237.0
-	side 3.0
-	aide 2.0
-	wide 250.0
-	wife 0.0
-	fide 0.0
-	ride 6.0
-	wie 13.0
-	hide 2.0
-	wire 43.0
-	wise 30.0
-	wade 103.0
-	wides 223.0
-	wine 3.0
-Get candidates of word: variety
-	variety 250.0
+  <system-out><![CDATA[Get candidates of word: at
+	akt Infinity
+	dt 0.0045045045045045045
+	act Infinity
+	ate Infinity
+	bat Infinity
+	fat Infinity
+	hat Infinity
+	atm Infinity
+	atp 0.16666666666666666
+	lat Infinity
+	atr 101.5
+	ut 0.04522613065326633
+	nat Infinity
+	aa 0.007853403141361256
+	ats 5.0
+	ab 0.035398230088495575
+	pat Infinity
+	ad 0.1891891891891892
+	rat Infinity
+	apt 0.5294117647058824
+	ae 0.008177570093457943
+	af 0.060240963855421686
+	tat Infinity
+	ag 0.1532258064516129
+	ah 0.032467532467532464
+	vat Infinity
+	it 0.38311688311688313
+	al Infinity
+	am 0.036885245901639344
+	an 0.01
+	ao 0.01818181818181818
+	et 0.39953271028037385
+	ap 0.024096385542168676
+	ar 0.016717325227963525
+	as 0.06994328922495274
+	at 250.0
+	av 0.034482758620689655
+	ay 0.09722222222222222
+	az 0.3
+	rt 0.001519756838905775
+	nt 0.006
+	amt 0.5555555555555556
+	cat Infinity
+	eat Infinity
+	wt 0.030303030303030304
+	mat Infinity
+	a 0.01832460732984293
+	st 0.0661625708884688
+	art 8.166666666666666
+	ant 3.533333333333333
+	sat Infinity
+	ta 1.0
+	aft Infinity
+	ct 0.03167420814479638
+	t 0.2072072072072072
+Get candidates of word: the
+	thu 0.07537688442211055
+	che 0.04072398190045249
+	thee Infinity
+	thy 0.25
+	them 0.45
+	then 6.333333333333333
+	toe 0.007272727272727273
+	phe 0.024096385542168676
+	the 250.0
+	te 0.03162055335968379
+	she 0.06994328922495274
+	thf 0.024096385542168676
+	th 0.15584415584415584
+	tae 0.002617801047120419
+	tho 0.3381818181818182
+	he 0.009009009009009009
+	they Infinity
+	ths 0.022684310018903593
+Get candidates of word: home
+	rome 0.004559270516717325
+	some 0.001890359168241966
+	heme 0.13551401869158877
+	howe 0.06060606060606061
+	rhome Infinity
+	hose 0.017013232514177693
+	dome 0.013513513513513514
+	hope 0.024096385542168676
+	hone 0.36
+	home 250.0
+	hole Infinity
+	hume 0.19597989949748743
+	homey Infinity
+	homes 24.77777777777778
+	homo 0.3381818181818182
+	homer 9.875
+Get candidates of word: locations
+	location 0.312
+	locations 250.0
+	locutions 0.04522613065326633
+Get candidates of word: there
+	theyre Infinity
+	here 0.009009009009009009
+	thtre 0.007905138339920948
+	these 0.022684310018903593
+	tere 0.03162055335968379
+	thee 0.0969626168224299
+	theres 24.77777777777778
+	there 250.0
+	where 0.5757575757575758
+	theme 0.01639344262295082
+	three 1.0
+Get candidates of word: were
+	here 0.012987012987012988
+	tere 0.003952569169960474
+	wire 0.288961038961039
+	wee 0.0969626168224299
+	were 250.0
+	ere 0.009009009009009009
+	ware 1.0157068062827226
+	where Infinity
+	wore 0.3381818181818182
+	dwere Infinity
+Get candidates of word: traces
+	trace 0.4871495327102804
+	races 0.009009009009009009
+	traces 250.0
+	trades 0.07207207207207207
+	tracts 0.007905138339920948
+	traced 0.14864864864864866
+	tracer 0.02127659574468085
+	graces 0.1532258064516129
+	braces 0.035398230088495575
 Get candidates of word: of
-	ff 0.0
-	df 3.0
-	fo 0.0
-	wf 0.0
-	sf 4.0
-	ob 15.0
-	oc 0.0
-	od 3.0
-	oe 1.0
+	ef 0.13551401869158877
+	df 0.013513513513513514
+	orf 3.2666666666666666
+	cf 0.004524886877828055
+	or 0.00911854103343465
+	os 0.007561436672967864
+	af 0.23821989528795812
+	f 0.009009009009009009
+	off Infinity
+	o 0.007272727272727273
+	sf 0.007561436672967864
+	ob 0.13274336283185842
+	rf 0.00303951367781155
+	od 0.013513513513513514
+	oe 0.0011682242990654205
+	pf 0.05622489959839357
 	of 250.0
-	og 5.0
-	oh 2.0
-	oi 0.0
-	oj 0.0
-	ok 0.0
-	if 25.0
-	gf 0.0
-	on 1.0
-	ef 116.0
-	op 0.0
-	orf 98.0
-	cf 1.0
-	or 6.0
-	os 4.0
-	af 91.0
-	f 2.0
-	ou 0.0
-	ov 0.0
-	ox 0.0
-	oz 0.0
-	off 46.0
-	o 2.0
-	vf 0.0
-	rf 2.0
-	pf 14.0
-	nf 0.0
-	oft 8.0
-Get candidates of word: conditions
-	condition 156.0
-	conditions 250.0
-Get candidates of word: hme
-	heme 20.0
-	hm 17.0
-	hee 0.0
-	hmm 0.0
-	rme 3.0
-	hmo 93.0
-	home 22.0
-	hem 20.0
-	hume 0.0
-	hye 3.0
-	me 3.0
-	hue 13.0
-	hse 9.0
-	hmem 9.0
-	he 0.0
-Get candidates of word: meassure
-	measure 205.0
-	reassure 0.0
-Count: 5174.0
-Count: 5174.0
-Count: 5174.0
-Count: 5174.0
-Count: 5174.0
+	og 0.04032258064516129
+	oh 0.012987012987012988
+	oft Infinity
+	if 0.08116883116883117
+	on 0.002
+Get candidates of word: water
+	wager 0.1532258064516129
+	waters Infinity
+	cater 0.004524886877828055
+	waver 0.034482758620689655
+	walter 3.909090909090909
+	rater 0.00911854103343465
+	eater 0.0011682242990654205
+	waiter 4.066666666666666
+	water 250.0
+	hater 0.012987012987012988
+	watery 27.0
 ]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

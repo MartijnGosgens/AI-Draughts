@@ -24,7 +24,6 @@ public class SpellCorrectorTest {
     public SpellCorrectorTest() {
         try {
         instance = new SpellCorrector(new CorpusReader(), new ConfusionMatrixReader());
-        System.out.println("Count: "+new CorpusReader().getSmoothedCount("this"));
         } catch(IOException e) {
             fail("could not read file");
         }
@@ -60,8 +59,8 @@ public class SpellCorrectorTest {
     @Test
     public void testGetCandidateWords() {
         String[] words = new String[]{
-            "this", "essay", "allowed", "us", "to", "measure","a","wide","variety",
-            "of","conditions","hme","meassure"
+            "at", "the", "home", "locations", "there", "were", "traces", "of",
+            "water"
         };
         for (String w : words) {
             System.out.println("Get candidates of word: " + w);

@@ -9,6 +9,7 @@ public class SpellCorrector {
     final private ConfusionMatrixReader cmr;
     
     final char[] ALPHABET = "abcdefghijklmnopqrstuvwxyz'".toCharArray();
+    final char[] SPACE_ALPHABET = "abcdefghijklmnopqrstuvwxyz ".toCharArray();
     
     
     public SpellCorrector(CorpusReader cr, ConfusionMatrixReader cmr) 
@@ -198,21 +199,43 @@ public class SpellCorrector {
             mapOfWords.put(word, 250.0d);
         }
         
-        return mapOfWords;
+        // Remove zero probabilities
+        Map<String,Double> newMapOfWords = new HashMap<>();
+        for (Entry<String, Double> e : mapOfWords.entrySet()) {
+            if (e.getValue()>0) {
+                newMapOfWords.put(e.getKey(), e.getValue());
+            }
+        }
+        
+        return newMapOfWords;
     }        
 
+    double getNormalizationCount(String correct) {
+        double count = 0;
+        for (char c : SPACE_ALPHABET) {
+            for (char d : SPACE_ALPHABET)
+                count += cmr.getConfusionCount(c+""+d, correct);
+            count += cmr.getConfusionCount(c+"", correct);
+        }
+        return count;
+    }
+    
     /**
-     * 
+     * Correct {@code original} replacing the {@code index}th letter with 
+     * {@code insertion} (if in vocabulary).
      */
     Correction insert(String original, int index, char insertion) {
         String correct = original.substring(0, index)
                 + insertion 
                 + (index >= original.length() ? "" : original.substring(index));
         if (cr.inVocabulary(correct)) {
-            double probability = cmr.getConfusionCount((index>0 ? original.charAt(index-1)+"": " "), 
-                    (index>0 ? original.charAt(index-1)+"": " ")+insertion);
-//            if (probability==0.0d)
-//                System.out.println("insertion not found:"+" | "+insertion);
+            String errorLetters = (index>0 ? original.charAt(index-1)+"": " ");
+            String correctLetters = (index>0 ? original.charAt(index-1)+"": " ")+insertion;
+            double probability = cmr.getConfusionCount(errorLetters, correctLetters);
+            
+            // Normalise
+            probability /= getNormalizationCount(correctLetters);
+            
             return new Correction(original, correct, probability);
         } else {
             return null;
@@ -226,8 +249,13 @@ public class SpellCorrector {
         String correct = original.substring(0, index)
                 + (index < original.length() ? original.substring(index + 1) : "");
         if (cr.inVocabulary(correct)) {
-            double probability = cmr.getConfusionCount((index > 0 ? original.charAt(index-1) : " ") + "" + original.charAt(index), 
-                    (index > 0 ? original.charAt(index-1) : " ")+"");
+            String errorLetters = (index > 0 ? original.charAt(index-1) : " ") + "" + original.charAt(index);
+            String correctLetters = (index > 0 ? original.charAt(index-1) : " ")+"";
+            double probability = cmr.getConfusionCount(errorLetters, correctLetters);
+            
+            // Normalise
+            probability /= getNormalizationCount(correctLetters);
+            
             return new Correction(original, correct, probability);
         } else {
             return null;
@@ -243,9 +271,13 @@ public class SpellCorrector {
                 + original.charAt(index)
                 + (index >= original.length() ? "" : original.substring(index + 2));
         if (cr.inVocabulary(correct)) {
-            double probability = cmr.getConfusionCount(
-                    original.substring(index, index + 2), 
-                    original.charAt(index + 1)+""+ original.charAt(index));
+            String errorLetters = original.substring(index, index + 2);
+            String correctLetters = original.charAt(index + 1)+""+ original.charAt(index);
+            double probability = cmr.getConfusionCount(errorLetters, correctLetters);
+            
+            // Normalise
+            probability /= getNormalizationCount(correctLetters);
+            
             return new Correction(original, correct, probability);
         } else {
             return null;
@@ -260,9 +292,15 @@ public class SpellCorrector {
                 + insertion 
                 + (index < original.length() ? original.substring(index + 1) : "");
         if (cr.inVocabulary(correct)) {
+            String errorLetters = ""+original.charAt(index);
+            String correctLetters = ""+insertion;
             double probability = cmr.getConfusionCount(
                     ""+original.charAt(index), 
                     ""+insertion);
+            
+            // Normalise
+            probability /= getNormalizationCount(correctLetters);
+            
             return new Correction(original, correct, probability);
         } else {
             return null;
