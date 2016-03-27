@@ -17,58 +17,83 @@ public class SpellCorrector {
         this.cmr = cmr;
     }
     
-    private SentenceProbabilityPair findCorrect(ArrayList<String> previousWords,
-                                                ArrayList<String> nextWords,
+    private SentenceProbabilityPair findCorrect(String previousSentence /*ArrayList<String> previousWords,*/,
+                                                String nextSentence /*ArrayList<String> nextWords*/,
                                                 double currentProbability,
                                                 int correctionsMade) {
-        if (currentProbability == 0) {
-            // Return an empty sentence with zero probability
-            return new SentenceProbabilityPair("",0);
-        } else if (nextWords.size() == 0) {
+        String[] previousWords = previousSentence.trim().split(" ");
+        String[] nextWords = nextSentence.trim().split(" ");
+        // When nextSentence is empty, nextWords tends to contain an empty string
+        if (nextWords.length == 1 && nextWords[0].length()==0)
+            nextWords = new String[]{};
+        
+        if (nextWords.length == 0) {
             // Corrected all words, return the sentence
-            String sentence = "";
-            for (String word : previousWords)
-                sentence += word + " ";
-            currentProbability *= cr.conditionalProbability("EoS", 
-                    previousWords.get(previousWords.size()-1));
-            return new SentenceProbabilityPair(sentence.trim(), currentProbability);
+            String sentence = previousSentence+"";
+            if (cr.conditionalProbability("EoS",previousWords[previousWords.length-1]) > 0) {
+                currentProbability += Math.log10(
+                        cr.conditionalProbability("EoS",previousWords[previousWords.length-1])
+                );
+                return new SentenceProbabilityPair(sentence.trim(), currentProbability);
+            } else
+                return new SentenceProbabilityPair("",-Double.MAX_VALUE);
         } else if (correctionsMade == 2) {
             // Maximal number of corrections made, return the whole sentence with
             // its probability.
-            String sentence = "";
-            for (String word : previousWords)
-                sentence += word + " ";
+            String sentence = previousSentence+"";
             
             // Adjust probbility and add the rest of the words to the sentence
-            String lastWord = previousWords.get(previousWords.size()-1);
+            String lastWord = previousWords[previousWords.length-1];
             for (String nextWord : nextWords) {
-                currentProbability *= cr.conditionalProbability(nextWord, lastWord);
-                lastWord = nextWord;
-                sentence += lastWord + " ";
+                if (cr.conditionalProbability(nextWord, lastWord) > 0) {
+                    currentProbability += Math.log10(
+                            cr.conditionalProbability(nextWord, lastWord)
+                    );
+                    lastWord = nextWord;
+                    sentence += " "+lastWord;
+                } else {
+                    return new SentenceProbabilityPair("",-Double.MAX_VALUE);
+                }
             }
-            currentProbability *= cr.conditionalProbability("EoS", nextWords.get(nextWords.size()-1));
-            return new SentenceProbabilityPair(sentence.trim(), currentProbability);
+            if (cr.conditionalProbability("EoS", lastWord) > 0) {
+                currentProbability += Math.log10(
+                        cr.conditionalProbability("EoS", lastWord)
+                );
+                return new SentenceProbabilityPair(sentence.trim(), currentProbability);
+            } else {
+                return new SentenceProbabilityPair("",-Double.MAX_VALUE);
+            }
+            
         } else {
-            String nextWord = nextWords.get(0);
-            String lastWord = previousWords.get(previousWords.size()-1);
-            SentenceProbabilityPair best = new SentenceProbabilityPair("",0);
+            String nextWord = nextWords[0];
+            String lastWord = previousWords[previousWords.length-1];
+            SentenceProbabilityPair best = new SentenceProbabilityPair("",-Double.MAX_VALUE);
             
             for (Entry<String, Double> candidate : getCandidateWords(nextWord).entrySet()) {
-                double nextProbability = currentProbability * candidate.getValue()
-                        * cr.conditionalProbability(candidate.getKey(), lastWord);
-                previousWords.add(candidate.getKey());
-                nextWords.remove(nextWord);
-                SentenceProbabilityPair candidateSentence;
-                candidateSentence = findCorrect(
-                        previousWords, nextWords, nextProbability,
-                        correctionsMade - (candidate.equals(nextWord) ? 0 : 1));
-                
-                if (candidateSentence.probability > best.probability)
-                    best = candidateSentence;
-                
-                // Undo
-                nextWords.add(0, nextWord);
-                previousWords.remove(candidate.getKey());
+                if (candidate.getValue() * cr.conditionalProbability(candidate.getKey(), lastWord) > 0) {
+                    double nextProbability = currentProbability + Math.log10(
+                            candidate.getValue()
+                            * cr.conditionalProbability(candidate.getKey(), lastWord)
+                    );
+
+                    // Add the candidate to the sentence
+                    String newPreviousSentence = previousSentence + " " + candidate.getKey();
+
+                    // Remove from the nextSentence
+                    String newNextSentence = "";
+                    for (int i = 1; i < nextWords.length; ++ i) {
+                        newNextSentence += " "+nextWords[i];
+                    }
+
+                    SentenceProbabilityPair candidateSentence;
+                    candidateSentence = findCorrect(
+                            newPreviousSentence, newNextSentence, 
+                            nextProbability,
+                            correctionsMade + (candidate.getKey().equals(nextWord) ? 0 : 1));
+
+                    if (candidateSentence.probability > best.probability)
+                        best = candidateSentence;
+                }
             }
             return best;
         }
@@ -81,14 +106,20 @@ public class SpellCorrector {
             throw new IllegalArgumentException("phrase must be non-empty.");
         }
             
-        String[] words = phrase.split(" ");
-        String finalSuggestion = "";
+//        String[] words = phrase.split(" ");
+        String finalSuggestion;
         
         /** CODE TO BE ADDED **/
-        ArrayList<String> start = new ArrayList();
-        start.add("SoS");
-        SentenceProbabilityPair bestCorrection = findCorrect(start, new ArrayList(), 1d, 0);
-        return bestCorrection.getSentence();
+        SentenceProbabilityPair bestCorrection = findCorrect("SoS", phrase, 0, 0);
+        
+        // Remove StartOfSentence
+        try {
+        finalSuggestion = bestCorrection.getSentence().split("SoS ")[1];
+        return finalSuggestion;
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // The corrector was not able to correct the sentence, return original
+            return phrase;
+        }
 //        for (String word : words){
 //            Map<String,Double> candidateWords = getCandidateWords(word);
 //            String maxCandidate = word;

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite errors="0" failures="0" hostname="s147569" name="SpellCorrectorTest" skipped="0" tests="7" time="4.262" timestamp="2016-03-26T17:51:04">
+<testsuite errors="0" failures="0" hostname="s147569" name="SpellCorrectorTest" skipped="0" tests="7" time="51.127" timestamp="2016-03-27T13:11:04">
   <properties>
     <property name="libs.jsp-compiler.javadoc" value="" />
     <property name="netbeans.autoupdate.country" value="NL" />
@@ -58,7 +58,7 @@
     <property name="libs.j2me_common_ant.maven-pom" value="" />
     <property name="libs.spring-webmvc3.0.maven-pom" value="" />
     <property name="libs.swing-layout.maven-pom" value="" />
-    <property name="sun.java.command" value="org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner SpellCorrectorTest skipNonTests=false filtertrace=true haltOnError=false haltOnFailure=false showoutput=true outputtoformatters=true logfailedtests=true threadid=0 logtestlistenerevents=true formatter=org.apache.tools.ant.taskdefs.optional.junit.BriefJUnitResultFormatter formatter=org.apache.tools.ant.taskdefs.optional.junit.XMLJUnitResultFormatter,C:\Users\s147569\Dropbox\School\Artificial Intelligence\2ID90\AI-Draughts\SpellChecker\2ID90\assignment4\spellchecker\build\test\results\TEST-SpellCorrectorTest.xml crashfile=C:\Users\s147569\Dropbox\School\Artificial Intelligence\2ID90\AI-Draughts\SpellChecker\2ID90\assignment4\spellchecker\build\junitvmwatcher1076189386053773072.properties propsfile=C:\Users\s147569\Dropbox\School\Artificial Intelligence\2ID90\AI-Draughts\SpellChecker\2ID90\assignment4\spellchecker\build\junit4649874999965621377.properties" />
+    <property name="sun.java.command" value="org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner SpellCorrectorTest skipNonTests=false filtertrace=true haltOnError=false haltOnFailure=false showoutput=true outputtoformatters=true logfailedtests=true threadid=0 logtestlistenerevents=true formatter=org.apache.tools.ant.taskdefs.optional.junit.BriefJUnitResultFormatter formatter=org.apache.tools.ant.taskdefs.optional.junit.XMLJUnitResultFormatter,C:\Users\s147569\Dropbox\School\Artificial Intelligence\2ID90\AI-Draughts\SpellChecker\2ID90\assignment4\spellchecker\build\test\results\TEST-SpellCorrectorTest.xml crashfile=C:\Users\s147569\Dropbox\School\Artificial Intelligence\2ID90\AI-Draughts\SpellChecker\2ID90\assignment4\spellchecker\build\junitvmwatcher7575104316087697249.properties propsfile=C:\Users\s147569\Dropbox\School\Artificial Intelligence\2ID90\AI-Draughts\SpellChecker\2ID90\assignment4\spellchecker\build\junit1702192007364268563.properties" />
     <property name="build.classes.dir" value="build/classes" />
     <property name="netbeans.accept_license_class" value="org.netbeans.license.AcceptLicense" />
     <property name="build.sysclasspath" value="ignore" />
@@ -99,7 +99,7 @@
     <property name="javac.debug" value="true" />
     <property name="javadoc.splitindex" value="true" />
     <property name="file.separator" value="\" />
-    <property name="javac.includesfile.binary" value="C:\Users\s147569\Dropbox\School\Artificial Intelligence\2ID90\AI-Draughts\SpellChecker\2ID90\assignment4\spellchecker\null984884271" />
+    <property name="javac.includesfile.binary" value="C:\Users\s147569\Dropbox\School\Artificial Intelligence\2ID90\AI-Draughts\SpellChecker\2ID90\assignment4\spellchecker\null1868754138" />
     <property name="libs.junit_4.maven-pom" value="" />
     <property name="mkdist.disabled" value="false" />
     <property name="javac.test.processorpath" value=":build/classes:C:\Program Files\NetBeans 8.1\platform\modules\ext\junit-4.12.jar:C:\Program Files\NetBeans 8.1\platform\modules\ext\hamcrest-core-1.3.jar" />
@@ -113,6 +113,7 @@
     <property name="libs.hibernate4-persistencemodelgen.javadoc" value="" />
     <property name="libs.jaxb.javadoc" value="C:\Program Files\NetBeans 8.1\ide\docs\jaxb-api-doc.zip" />
     <property name="libs.struts.classpath" value="C:\Program Files\NetBeans 8.1\enterprise\modules\ext\struts\antlr-2.7.2.jar;C:\Program Files\NetBeans 8.1\enterprise\modules\ext\struts\bsf-2.3.0.jar;C:\Program Files\NetBeans 8.1\enterprise\modules\ext\struts\commons-beanutils-1.8.0.jar;C:\Program Files\NetBeans 8.1\enterprise\modules\ext\struts\commons-chain-1.2.jar;C:\Program Files\NetBeans 8.1\enterprise\modules\ext\struts\commons-digester-1.8.jar;C:\Program Files\NetBeans 8.1\enterprise\modules\ext\struts\commons-fileupload-1.1.1.jar;C:\Program Files\NetBeans 8.1\enterprise\modules\ext\struts\commons-io-1.1.jar;C:\Program Files\NetBeans 8.1\enterprise\modules\ext\struts\commons-logging-1.0.4.jar;C:\Program Files\NetBeans 8.1\enterprise\modules\ext\struts\commons-validator-1.3.1.jar;C:\Program Files\NetBeans 8.1\enterprise\modules\ext\struts\jstl-1.0.2.jar;C:\Program Files\NetBeans 8.1\enterprise\modules\ext\struts\oro-2.0.8.jar;C:\Program Files\NetBeans 8.1\enterprise\modules\ext\struts\standard-1.0.6.jar;C:\Program Files\NetBeans 8.1\enterprise\modules\ext\struts\struts-core-1.3.10.jar;C:\Program Files\NetBeans 8.1\enterprise\modules\ext\struts\struts-el-1.3.10.jar;C:\Program Files\NetBeans 8.1\enterprise\modules\ext\struts\struts-extras-1.3.10.jar;C:\Program Files\NetBeans 8.1\enterprise\modules\ext\struts\struts-faces-1.3.10.jar;C:\Program Files\NetBeans 8.1\enterprise\modules\ext\struts\struts-mailreader-dao-1.3.10.jar;C:\Program Files\NetBeans 8.1\enterprise\modules\ext\struts\struts-scripting-1.3.10.jar;C:\Program Files\NetBeans 8.1\enterprise\modules\ext\struts\struts-taglib-1.3.10.jar;C:\Program Files\NetBeans 8.1\enterprise\modules\ext\struts\struts-tiles-1.3.10.jar" />
+    <property name="org.openide.awt.SwingBrowserImpl.do-not-block-awt" value="false" />
     <property name="javac.includes.binary" value="C:\Users\s147569\Dropbox\School\Artificial Intelligence\2ID90\AI-Draughts\SpellChecker\2ID90\assignment4\spellchecker\build\test\classes\SpellCorrectorTest.class" />
     <property name="ant.home" value="C:\Program Files\NetBeans 8.1\extide\ant" />
     <property name="libs.junit_4.src" value="C:\Program Files\NetBeans 8.1\platform\docs\junit-4.12-sources.jar" />
@@ -301,12 +302,12 @@
     <property name="libs.swing-layout.classpath" value="C:\Program Files\NetBeans 8.1\platform\modules\ext\swing-layout-1.0.4.jar" />
     <property name="libs.javaee-web-api-7.0.maven-pom" value="" />
     <property name="libs.restlib.src" value="" />
-    <property name="build.generated.dir" value="build/generated" />
     <property name="javac.source" value="1.8" />
+    <property name="build.generated.dir" value="build/generated" />
     <property name="line.separator" value="&#xd;&#xa;" />
     <property name="java.specification.version" value="1.8" />
-    <property name="libs.jaxws21.maven-pom" value="" />
     <property name="java.vm.info" value="mixed mode" />
+    <property name="libs.jaxws21.maven-pom" value="" />
     <property name="nb.junit.batch" value="true" />
     <property name="junit.forkmode" value="perTest" />
     <property name="sun.boot.class.path" value="C:\Program Files (x86)\Java\jdk1.8.0_05\jre\lib\resources.jar;C:\Program Files (x86)\Java\jdk1.8.0_05\jre\lib\rt.jar;C:\Program Files (x86)\Java\jdk1.8.0_05\jre\lib\sunrsasign.jar;C:\Program Files (x86)\Java\jdk1.8.0_05\jre\lib\jsse.jar;C:\Program Files (x86)\Java\jdk1.8.0_05\jre\lib\jce.jar;C:\Program Files (x86)\Java\jdk1.8.0_05\jre\lib\charsets.jar;C:\Program Files (x86)\Java\jdk1.8.0_05\jre\lib\jfr.jar;C:\Program Files (x86)\Java\jdk1.8.0_05\jre\classes" />
@@ -328,13 +329,13 @@
     <property name="dist.dir" value="dist" />
     <property name="libs.groovy-all.javadoc" value="" />
     <property name="testng.debug.mode" value="" />
-    <property name="libs.groovy-all.classpath" value="C:\Program Files\NetBeans 8.1\groovy\modules\ext\groovy-all.jar" />
     <property name="javac.fork" value="false" />
+    <property name="libs.groovy-all.classpath" value="C:\Program Files\NetBeans 8.1\groovy\modules\ext\groovy-all.jar" />
     <property name="java.awt.printerjob" value="sun.awt.windows.WPrinterJob" />
     <property name="default.javac.source" value="1.8" />
     <property name="debug-transport-by-os" value="dt_shmem" />
-    <property name="sun.jnu.encoding" value="Cp1252" />
     <property name="libs.MySQLDriver.src" value="" />
+    <property name="sun.jnu.encoding" value="Cp1252" />
     <property name="build.test.results.dir" value="build/test/results" />
     <property name="java.runtime.version" value="1.8.0_05-b13" />
     <property name="ant.file.type.SpellChecker" value="file" />
@@ -371,10 +372,10 @@
     <property name="libs.restlib.javadoc" value="" />
     <property name="nb.internal.action.name" value="run.single" />
     <property name="libs.JAXB-ENDORSED.classpath" value="C:\Program Files\NetBeans 8.1\ide\modules\ext\jaxb\api\jaxb-api.jar" />
-    <property name="libs.javaee-api-7.0.javadoc" value="C:\Program Files\NetBeans 8.1\enterprise\docs\javaee-doc-api.jar" />
     <property name="libs.eclipselink.classpath" value="C:\Program Files\NetBeans 8.1\java\modules\ext\eclipselink\eclipselink.jar;C:\Program Files\NetBeans 8.1\java\modules\ext\eclipselink\javax.persistence_2.1.0.v201304241213.jar;C:\Program Files\NetBeans 8.1\java\modules\ext\eclipselink\org.eclipse.persistence.jpa.jpql_2.5.2.v20140319-9ad6abd.jar" />
-    <property name="libs.beans-binding.javadoc" value="C:\Program Files\NetBeans 8.1\java\docs\beansbinding-1.2.1-doc.zip" />
+    <property name="libs.javaee-api-7.0.javadoc" value="C:\Program Files\NetBeans 8.1\enterprise\docs\javaee-doc-api.jar" />
     <property name="java.awt.graphicsenv" value="sun.awt.Win32GraphicsEnvironment" />
+    <property name="libs.beans-binding.javadoc" value="C:\Program Files\NetBeans 8.1\java\docs\beansbinding-1.2.1-doc.zip" />
     <property name="java.vm.vendor" value="Oracle Corporation" />
     <property name="libs.CopyLibs.classpath" value="C:\Program Files\NetBeans 8.1\java\ant\extra\org-netbeans-modules-java-j2seproject-copylibstask.jar" />
     <property name="libs.spring-framework300.classpath" value="C:\Program Files\NetBeans 8.1\ide\modules\org-apache-commons-logging.jar;C:\Program Files\NetBeans 8.1\java\modules\ext\cglib-2.2.jar;C:\Program Files\NetBeans 8.1\java\modules\ext\spring-3.0\spring-aop-3.2.7.RELEASE.jar;C:\Program Files\NetBeans 8.1\java\modules\ext\spring-3.0\spring-aspects-3.2.7.RELEASE.jar;C:\Program Files\NetBeans 8.1\java\modules\ext\spring-3.0\spring-beans-3.2.7.RELEASE.jar;C:\Program Files\NetBeans 8.1\java\modules\ext\spring-3.0\spring-build-src-3.2.7.RELEASE.jar;C:\Program Files\NetBeans 8.1\java\modules\ext\spring-3.0\spring-context-3.2.7.RELEASE.jar;C:\Program Files\NetBeans 8.1\java\modules\ext\spring-3.0\spring-context-support-3.2.7.RELEASE.jar;C:\Program Files\NetBeans 8.1\java\modules\ext\spring-3.0\spring-core-3.2.7.RELEASE.jar;C:\Program Files\NetBeans 8.1\java\modules\ext\spring-3.0\spring-expression-3.2.7.RELEASE.jar;C:\Program Files\NetBeans 8.1\java\modules\ext\spring-3.0\spring-framework-bom-3.2.7.RELEASE.jar;C:\Program Files\NetBeans 8.1\java\modules\ext\spring-3.0\spring-instrument-3.2.7.RELEASE.jar;C:\Program Files\NetBeans 8.1\java\modules\ext\spring-3.0\spring-instrument-tomcat-3.2.7.RELEASE.jar;C:\Program Files\NetBeans 8.1\java\modules\ext\spring-3.0\spring-jdbc-3.2.7.RELEASE.jar;C:\Program Files\NetBeans 8.1\java\modules\ext\spring-3.0\spring-jms-3.2.7.RELEASE.jar;C:\Program Files\NetBeans 8.1\java\modules\ext\spring-3.0\spring-orm-3.2.7.RELEASE.jar;C:\Program Files\NetBeans 8.1\java\modules\ext\spring-3.0\spring-oxm-3.2.7.RELEASE.jar;C:\Program Files\NetBeans 8.1\java\modules\ext\spring-3.0\spring-struts-3.2.7.RELEASE.jar;C:\Program Files\NetBeans 8.1\java\modules\ext\spring-3.0\spring-test-3.2.7.RELEASE.jar;C:\Program Files\NetBeans 8.1\java\modules\ext\spring-3.0\spring-tx-3.2.7.RELEASE.jar;C:\Program Files\NetBeans 8.1\java\modules\ext\spring-3.0\spring-web-3.2.7.RELEASE.jar;C:\Program Files\NetBeans 8.1\java\modules\ext\spring-3.0\spring-webmvc-3.2.7.RELEASE.jar;C:\Program Files\NetBeans 8.1\java\modules\ext\spring-3.0\spring-webmvc-portlet-3.2.7.RELEASE.jar" />
@@ -396,8 +397,8 @@
     <property name="build.dir" value="build" />
     <property name="libs.jsp-compilation.classpath" value="C:\Program Files\NetBeans 8.1\extide\ant\lib\ant.jar;C:\Program Files\NetBeans 8.1\enterprise\modules\ext\servlet3.1-jsp2.3-api.jar;C:\Program Files\NetBeans 8.1\enterprise\modules\ext\glassfish-jspparser-4.0.jar;C:\Program Files\NetBeans 8.1\enterprise\modules\ext\jsf-2_2\javax.faces.jar;C:\Program Files\NetBeans 8.1\enterprise\modules\ext\jstl-api.jar;C:\Program Files\NetBeans 8.1\extide\ant\lib\ant-launcher.jar" />
     <property name="ant.version" value="Apache Ant(TM) version 1.9.4 compiled on April 29 2014" />
-    <property name="build.classes.excludes" value="**/*.java,**/*.form" />
     <property name="file.encoding" value="Cp1252" />
+    <property name="build.classes.excludes" value="**/*.java,**/*.form" />
     <property name="javadoc.nonavbar" value="false" />
     <property name="jdkBug6558476" value="false" />
     <property name="libs.spring-webmvc4.0.classpath" value="C:\Program Files\NetBeans 8.1\java\modules\ext\spring-4\spring-webmvc-4.0.1.RELEASE.jar" />
@@ -405,14 +406,16 @@
     <property name="awt.toolkit" value="sun.awt.windows.WToolkit" />
     <property name="libs.javaee-web-api-7.0.javadoc" value="C:\Program Files\NetBeans 8.1\enterprise\docs\javaee-doc-api.jar" />
   </properties>
-  <testcase classname="SpellCorrectorTest" name="testSubstitute" time="0.002" />
-  <testcase classname="SpellCorrectorTest" name="testGetCandidateWords" time="0.008" />
+  <testcase classname="SpellCorrectorTest" name="testSubstitute" time="0.0" />
+  <testcase classname="SpellCorrectorTest" name="testGetCandidateWords" time="0.015" />
   <testcase classname="SpellCorrectorTest" name="testCorrectPhrase" time="0.0" />
   <testcase classname="SpellCorrectorTest" name="testDelete" time="0.0" />
   <testcase classname="SpellCorrectorTest" name="testInsert" time="0.0" />
   <testcase classname="SpellCorrectorTest" name="testTranspose" time="0.0" />
-  <testcase classname="SpellCorrectorTest" name="testNoisyChannelProbability" time="0.001" />
-  <system-out><![CDATA[Get candidates of word: this
+  <testcase classname="SpellCorrectorTest" name="testNoisyChannelProbability" time="0.0" />
+  <system-out><![CDATA[Count: 5174.0
+Count: 5174.0
+Get candidates of word: this
 	his 2.0
 	thais 15.0
 	thus 47.0
@@ -677,6 +680,14 @@ Get candidates of word: hme
 	hse 9.0
 	hmem 9.0
 	he 0.0
+Get candidates of word: meassure
+	measure 205.0
+	reassure 0.0
+Count: 5174.0
+Count: 5174.0
+Count: 5174.0
+Count: 5174.0
+Count: 5174.0
 ]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>
