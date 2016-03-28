@@ -360,7 +360,7 @@ class SentenceProbabilityPair {
         sentence = s;
         probability = p;
         if (p>1) {
-            System.out.println(s+" has probability higher than one");
+            //System.out.println(s+" has probability higher than one");
         }
     }
     

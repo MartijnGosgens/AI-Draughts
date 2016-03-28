@@ -43,7 +43,8 @@ public class SpellChecker {
                 "the development of idabetes is present in mice that carry a transgen",
                 "the development of diabetes us present in mice that harry a transgen",
                 "why won't this spellchecker work",
-                "measure a family"
+                "at the hme locations there were traces of water",
+                "this assay allowed us to measure a wide variety of conitions"
             };
             
             for(String s0: sentences) {

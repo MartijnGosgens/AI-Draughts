@@ -19,6 +19,8 @@ public class CorpusReader
     final static String CNTFILE_LOC = "samplecnt.txt";
     final static String VOCFILE_LOC = "samplevoc.txt";
     
+    final double LEGAL_FRACTION = 500d;
+    
     private HashMap<String,Integer> ngrams;
     private int numMonograms = 0;
     private int numBigrams = 0;
@@ -26,17 +28,21 @@ public class CorpusReader
     private Set<String> vocabulary;
     private int numWords = 0;
     
-    private int maxFreq;
-    private int sumCounts;
-    private TreeMap<Integer, Integer> freqOfFreq;
+    private int maxFreqMono;
+    private int maxFreqBi;
+    
+    //private TreeMap<Integer, Integer> freqOfFreq;
+    private TreeMap<Integer, Integer> freqOfFreqMono;
+    private TreeMap<Integer, Integer> freqOfFreqBi;
+    
         
     public CorpusReader() throws IOException
     {  
         readNGrams();
         readVocabulary();
-        makeFreqOfFreqTreeMap();
-        maxFreq = freqOfFreq.lastKey();
-        sumCounts = getAllCount();
+        makeFreqOfFreqMaps();
+        maxFreqMono = freqOfFreqMono.lastKey();
+        maxFreqBi = freqOfFreqBi.lastKey();
     }
     
     /**
@@ -102,7 +108,6 @@ public class CorpusReader
         {
             String line = in.readLine();
             vocabulary.add(line);
-            numWords ++;
         }
     }
     
@@ -135,87 +140,99 @@ public class CorpusReader
     }
     
     /**
-     * Calculates the smoothed count of string {@code NGram}.
-     * @param NGram
-     * @return Smoothed count
-     */
-    public double getSmoothedCount(String NGram)
-    {
-        if(NGram == null || NGram.length() == 0)
-        {
-            throw new IllegalArgumentException("NGram must be non-empty.");
-        }
-        
-        double smoothedCount = 0.0;
-        int c = getNGramCount(NGram);
-        
-        // good Turing smoothing:
-        if (c == 0) {
-            /* c* = N_1 / N
-            * with N_1 is the frequency of words with frequency 1 and
-            * N is the sum of frequencies of all words
-            */
-            smoothedCount = (double) freqOfFreq.get(1) / sumCounts;
-        } else if (c == maxFreq) {
-            /* If the word ngram has the highest frequency, divide by the sum of
-            * frequencies of all words.      
-            */
-            smoothedCount = (double) c / sumCounts;
-        } else {
-            /* c* = ((c+1) * N_c+1) / N_c
-            * where c is the frequency of NGram and
-            * N_c is the frequency of frequency c
-            * smoothedCount is c* / sumcounts
-            */
-            int Nc = freqOfFreq.get(c);
-            int nextC = freqOfFreq.ceilingKey(c);
-            int Nc1 = freqOfFreq.get(nextC);
-
-            double evalC = (double) ((c + (nextC - c)) * Nc1) / Nc;
-            smoothedCount = evalC / sumCounts;
-        }
-        return smoothedCount;
-    }
-    
-    /**
-     * Returns the probability that a certain word is {@code w}. (uses Add-one)
+     * Returns the probability of {@code w} occurring. (uses Good-Turing)
      * @param w
      * @return 
      */
     double wordProbability(String w) {
         if (inVocabulary(w)) {
-            return (getNGramCount(w)+1)/(double)(numMonograms + numWords);
+            // Get the count of the word
+            int c = getNGramCount(w);
+            // good Turing smoothing:
+            if (c == maxFreqMono) {
+                /* If the word has the highest frequency, divide by the sum of
+                * frequencies of all words.      
+                */
+                return (double) c / numMonograms;
+            } else {
+                /* c* = ((c+1) * N_c+1) / N_c
+                * where c is the frequency of the word and
+                * N_c is the frequency of frequency c
+                * smoothedProbability is c* / sumcounts
+                */
+                int Nc = freqOfFreqMono.get(c);
+                int nextC = freqOfFreqMono.ceilingKey(c);
+                int Nc1 = freqOfFreqMono.get(nextC);
+
+                double evalC = (double) (nextC * Nc1) / Nc;
+                return evalC / numMonograms;
+            }
+        } else {
+            return 0;
+        }
+    }
+    
+    double combinationProbability(String w1, String w2) {
+        if (inVocabulary(w1) && inVocabulary(w2)) {
+            // Get the count of the word
+            int c = getNGramCount(w1+" "+w2);
+            // good Turing smoothing:
+            if (c == maxFreqBi) {
+                /* If the word has the highest frequency, divide by the sum of
+                * frequencies of all words.      
+                */
+                return (double) c / numBigrams;
+            } else {
+                /* c* = ((c+1) * N_c+1) / N_c
+                * where c is the frequency of NGram and
+                * N_c is the frequency of frequency c
+                * smoothedProbability is c* / sumcounts
+                */
+                int Nc = freqOfFreqBi.get(c);
+                int nextC = freqOfFreqBi.ceilingKey(c+1);
+                int Nc1 = freqOfFreqBi.get(nextC);
+
+                double evalC = (double) (nextC * Nc1) / Nc;
+                return evalC / numBigrams;
+            }
         } else {
             return 0;
         }
     }
     
     /**
-     * Construct the tree map with frequencies as keys and freq. of freq. 
-     * as values.
+     * Construct the tree maps with frequencies as keys and freq. of freq. 
+     * as values for both the Monograms as the Bigrams.
      */
-    private void makeFreqOfFreqTreeMap(){
-        freqOfFreq = new TreeMap<>();
+    private void makeFreqOfFreqMaps() {
+        freqOfFreqMono = new TreeMap<>();
+        freqOfFreqBi = new TreeMap<>();
+        double numDistinctBigrams = 0;
         for (Entry<String,Integer> entry : ngrams.entrySet()) {
             int value = entry.getValue();
-            if (!freqOfFreq.containsKey(entry.getValue())) {
-                freqOfFreq.put(value , 1);
+            if (entry.getKey().contains(" ")) {
+                // Increment the number of distinct bigrams
+                numDistinctBigrams += 1d;
+                
+                // Bigram
+                if (!freqOfFreqBi.containsKey(entry.getValue())) {
+                    freqOfFreqBi.put(value, 1);
+                } else {
+                    freqOfFreqBi.put(value, freqOfFreqBi.get(entry.getValue())+1);
+                }
             } else {
-                freqOfFreq.put(value , freqOfFreq.get(entry.getValue())+1);
+                // Monogram
+                if (!freqOfFreqMono.containsKey(entry.getValue())) {
+                    freqOfFreqMono.put(value, 1);
+                } else {
+                    freqOfFreqMono.put(value, freqOfFreqMono.get(entry.getValue())+1);
+                }
             }
         }
-    }
-    
-    /**
-     * Returns the sum of the frequencies of all words in the vocabulary.
-     * @return sum
-     */
-    private int getAllCount(){
-        int result = 0;
-        for (Entry<String, Integer> entry : ngrams.entrySet()){
-            result += entry.getValue();
-        }
-        return result;
+        double numUnseenBigrams = Math.pow((double)(vocabulary.size()),2)
+                - numDistinctBigrams;
+        System.out.println("There are "+numUnseenBigrams+" unseen bigrams");
+        freqOfFreqBi.put(0, (int)(numUnseenBigrams/LEGAL_FRACTION));
     }
     
     /**
@@ -223,34 +240,12 @@ public class CorpusReader
      * {@code previous}.
      */
     public double conditionalProbability(String next, String previous) {
-        double occurrencePrevious = getSmoothedCount(previous);
-        double occurrenceFollowUp = getSmoothedCount(previous + " " + next);
-//        System.out.println("Smoothed:::: prev :: " + previous + ":::" + occurrencePrevious);
-//        System.out.println("Smoothed:::: prevnext :: " + previous + " " + next + ":::" + occurrenceFollowUp);
+        double occurrencePrevious = wordProbability(previous);
+        double occurrenceFollowUp = combinationProbability(previous, next);
         if (occurrenceFollowUp > occurrencePrevious) {
             System.out.println("P("+next+"|"+previous+")="+occurrenceFollowUp+"/"+occurrencePrevious+">1");
         }
         return occurrenceFollowUp / occurrencePrevious;
-
-        // No smoothening
-//        double total = getNGramCount(previous);
-//        double followUp = getNGramCount(previous + " " + next);
-//        System.out.println("Smoothed:::: prev :: " + previous + ":::" + total + ":::" + i++);
-//        System.out.println("Smoothed:::: prevnext :: " + previous + " " + next + ":::" + followUp + ":::" + i++);
-//        return followUp / total;
-
-        // AddOne Smoothening:
-//        if (!inVocabulary(next)) 
-//            return 0;
-//        
-//        double total = getNGramCount(previous) + 1;
-//        double followUp = getNGramCount(previous + " " + next) + 1;
-////        System.out.println("Smoothed:::: prev :: " + previous + ":::" + total + ":::" + i++);
-////        System.out.println("Smoothed:::: prevnext :: " + previous + " " + next + ":::" + followUp + ":::" + i++);
-//        if (followUp > total) {
-//            System.out.println("P("+next+"|"+previous+")="+followUp+"/"+total+">1");
-//        }
-//        return followUp / total;
     
     }
 }
