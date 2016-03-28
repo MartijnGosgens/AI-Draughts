@@ -86,6 +86,10 @@ public class SpellCorrector {
                             cr.conditionalProbability(candidate.getKey(), lastWord)
                         );
 
+                if (candidate.getKey().equals("ar")) {
+                    String test = "";
+                }
+                
                 // Add the candidate to the sentence
                 String newPreviousSentence = previousSentence + " " + candidate.getKey();
 
@@ -106,6 +110,7 @@ public class SpellCorrector {
                 if (candidateSentence.probability > best.probability)
                     best = candidateSentence;
             }
+            //System.out.println("found: "+best.sentence+". with probability "+best.probability);
             return best;
         }
     }
@@ -187,10 +192,10 @@ public class SpellCorrector {
         for (Entry<String, Double> e : mapOfWords.entrySet()) {
             if (e.getValue()>0) {
                 newMapOfWords.put(
-                        e.getKey(), Math.log10(cr.wordProbability(e.getKey()))
-                        + Math.log10(
-                                cr.getSmoothedCount(e.getKey())*e.getValue() 
-                                / getNumPossibleErrors(e.getKey())
+                        e.getKey(), Math.log10(cr.wordProbability(e.getKey()))+ 
+                        Math.log10(
+                                e.getValue() 
+                                /// getNumPossibleErrors(e.getKey())
                         )
                 );
             }
@@ -205,7 +210,7 @@ public class SpellCorrector {
             // {@code (numWords - 1) / numWords if numWords > 0} and 0.5 if
             // {@code numWords == 1}.
             newMapOfWords.put(word, Math.log10(
-                    cr.wordProbability(word) *
+                    //cr.wordProbability(word) *
                     (numWords > 1 ? (numWords - 1)/numWords : 0.5)
             ));
         }
@@ -253,7 +258,7 @@ public class SpellCorrector {
             double probability = cmr.getConfusionCount(errorLetters, correctLetters);
             
             // Normalise
-            //probability /= getNormalizationCount(correctLetters);
+            probability /= getNormalizationCount(correctLetters);
             
             return new Correction(original, correct, probability);
         } else {
@@ -273,7 +278,7 @@ public class SpellCorrector {
             double probability = cmr.getConfusionCount(errorLetters, correctLetters);
             
             // Normalise
-            //probability /= getNormalizationCount(correctLetters);
+            probability /= getNormalizationCount(correctLetters);
             
             return new Correction(original, correct, probability);
         } else {
@@ -295,7 +300,7 @@ public class SpellCorrector {
             double probability = cmr.getConfusionCount(errorLetters, correctLetters);
             
             // Normalise
-            //probability /= getNormalizationCount(correctLetters);
+            probability /= getNormalizationCount(correctLetters);
             
             return new Correction(original, correct, probability);
         } else {
@@ -318,7 +323,7 @@ public class SpellCorrector {
                     ""+insertion);
             
             // Normalise
-            //probability /= getNormalizationCount(correctLetters);
+            probability /= getNormalizationCount(correctLetters);
             
             return new Correction(original, correct, probability);
         } else {

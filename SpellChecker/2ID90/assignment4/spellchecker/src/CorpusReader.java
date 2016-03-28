@@ -189,7 +189,11 @@ public class CorpusReader
      * @return 
      */
     double wordProbability(String w) {
-        return (getNGramCount(w)+1)/(double)(numMonograms + numWords);
+        if (inVocabulary(w)) {
+            return (getNGramCount(w)+1)/(double)(numMonograms + numWords);
+        } else {
+            return 0;
+        }
     }
     
     /**
@@ -258,6 +262,9 @@ public class CorpusReader
 //        return followUp / total;
 
         // AddOne Smoothening:
+        if (!inVocabulary(next)) 
+            return 0;
+        
         double total = getNGramCount(previous) + 1;
         double followUp = getNGramCount(previous + " " + next) + 1;
 //        System.out.println("Smoothed:::: prev :: " + previous + ":::" + total + ":::" + i++);

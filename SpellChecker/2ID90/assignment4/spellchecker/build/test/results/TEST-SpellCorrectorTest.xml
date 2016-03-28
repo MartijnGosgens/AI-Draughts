@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite errors="0" failures="0" hostname="s147569" name="SpellCorrectorTest" skipped="0" tests="7" time="6.933" timestamp="2016-03-28T10:40:46">
+<testsuite errors="0" failures="0" hostname="s147569" name="SpellCorrectorTest" skipped="0" tests="7" time="5.407" timestamp="2016-03-28T12:03:17">
   <properties>
     <property name="libs.jsp-compiler.javadoc" value="" />
     <property name="netbeans.autoupdate.country" value="NL" />
@@ -58,7 +58,7 @@
     <property name="libs.j2me_common_ant.maven-pom" value="" />
     <property name="libs.spring-webmvc3.0.maven-pom" value="" />
     <property name="libs.swing-layout.maven-pom" value="" />
-    <property name="sun.java.command" value="org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner SpellCorrectorTest skipNonTests=false filtertrace=true haltOnError=false haltOnFailure=false showoutput=true outputtoformatters=true logfailedtests=true threadid=0 logtestlistenerevents=true formatter=org.apache.tools.ant.taskdefs.optional.junit.BriefJUnitResultFormatter formatter=org.apache.tools.ant.taskdefs.optional.junit.XMLJUnitResultFormatter,C:\Users\s147569\Dropbox\School\Artificial Intelligence\2ID90\AI-Draughts\SpellChecker\2ID90\assignment4\spellchecker\build\test\results\TEST-SpellCorrectorTest.xml crashfile=C:\Users\s147569\Dropbox\School\Artificial Intelligence\2ID90\AI-Draughts\SpellChecker\2ID90\assignment4\spellchecker\build\junitvmwatcher9113597576176602991.properties propsfile=C:\Users\s147569\Dropbox\School\Artificial Intelligence\2ID90\AI-Draughts\SpellChecker\2ID90\assignment4\spellchecker\build\junit5835762883034608852.properties" />
+    <property name="sun.java.command" value="org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner SpellCorrectorTest skipNonTests=false filtertrace=true haltOnError=false haltOnFailure=false showoutput=true outputtoformatters=true logfailedtests=true threadid=0 logtestlistenerevents=true formatter=org.apache.tools.ant.taskdefs.optional.junit.BriefJUnitResultFormatter formatter=org.apache.tools.ant.taskdefs.optional.junit.XMLJUnitResultFormatter,C:\Users\s147569\Dropbox\School\Artificial Intelligence\2ID90\AI-Draughts\SpellChecker\2ID90\assignment4\spellchecker\build\test\results\TEST-SpellCorrectorTest.xml crashfile=C:\Users\s147569\Dropbox\School\Artificial Intelligence\2ID90\AI-Draughts\SpellChecker\2ID90\assignment4\spellchecker\build\junitvmwatcher6384188858488724402.properties propsfile=C:\Users\s147569\Dropbox\School\Artificial Intelligence\2ID90\AI-Draughts\SpellChecker\2ID90\assignment4\spellchecker\build\junit1176112664601544800.properties" />
     <property name="build.classes.dir" value="build/classes" />
     <property name="netbeans.accept_license_class" value="org.netbeans.license.AcceptLicense" />
     <property name="build.sysclasspath" value="ignore" />
@@ -99,7 +99,7 @@
     <property name="javac.debug" value="true" />
     <property name="javadoc.splitindex" value="true" />
     <property name="file.separator" value="\" />
-    <property name="javac.includesfile.binary" value="C:\Users\s147569\Dropbox\School\Artificial Intelligence\2ID90\AI-Draughts\SpellChecker\2ID90\assignment4\spellchecker\null323157917" />
+    <property name="javac.includesfile.binary" value="C:\Users\s147569\Dropbox\School\Artificial Intelligence\2ID90\AI-Draughts\SpellChecker\2ID90\assignment4\spellchecker\null869459608" />
     <property name="libs.junit_4.maven-pom" value="" />
     <property name="mkdist.disabled" value="false" />
     <property name="javac.test.processorpath" value=":build/classes:C:\Program Files\NetBeans 8.1\platform\modules\ext\junit-4.12.jar:C:\Program Files\NetBeans 8.1\platform\modules\ext\hamcrest-core-1.3.jar" />
@@ -407,21 +407,202 @@
     <property name="libs.javaee-web-api-7.0.javadoc" value="C:\Program Files\NetBeans 8.1\enterprise\docs\javaee-doc-api.jar" />
   </properties>
   <testcase classname="SpellCorrectorTest" name="testSubstitute" time="0.0" />
-  <testcase classname="SpellCorrectorTest" name="testGetCandidateWords" time="0.016" />
+  <testcase classname="SpellCorrectorTest" name="testGetCandidateWords" time="0.156" />
   <testcase classname="SpellCorrectorTest" name="testCorrectPhrase" time="0.0" />
   <testcase classname="SpellCorrectorTest" name="testDelete" time="0.0" />
-  <testcase classname="SpellCorrectorTest" name="testInsert" time="0.0" />
+  <testcase classname="SpellCorrectorTest" name="testInsert" time="0.016" />
   <testcase classname="SpellCorrectorTest" name="testTranspose" time="0.0" />
-  <testcase classname="SpellCorrectorTest" name="testNoisyChannelProbability" time="0.828" />
+  <testcase classname="SpellCorrectorTest" name="testNoisyChannelProbability" time="0.672" />
   <system-out><![CDATA[Get candidates of word: this
-	his -2.1622056226753172
-	thais -7.749100510016728
-	thus -2.9748323069148492
-	this -2.6992593256810102
-	whis -7.812395054083051
-	ths -7.900930870172971
-	tris -6.422513037125374
-	thin -5.67286665272661
+	his -2.949877704036875
+	thais -2.415196006002818
+	thus -1.71742260791066
+	this -0.0377885608893998
+	whis -2.0013692953494786
+	ths -2.089905111439398
+	tris -3.0886085331114645
+	thin -2.661181443446619
+Get candidates of word: assay
+	assay -0.0377885608893998
+	essay -1.1632904356762483
+	assays -2.4731003768599567
+Get candidates of word: allowed
+	allowed -0.0377885608893998
+	hallowed -2.8823347654013243
+	wallowed -2.272711645856336
+Get candidates of word: us
+	bus -2.0052418145692226
+	rs -2.6449307079135873
+	eus -2.1496808824829383
+	usa -2.143990085824313
+	usc -1.7614823510298543
+	ns -2.9334872878487053
+	use -1.589406129294673
+	ous -2.564902672529205
+	ua -2.1072099696478683
+	usm -3.2016701796465816
+	uso -1.7774268223893115
+	uh -2.741939077729199
+	usu -1.8706268204549223
+	ul -1.2676062401770316
+	un -2.3028357965272437
+	up -1.9816244801547351
+	ws -2.6848453616444123
+	ur -1.9624369880545964
+	us -0.0377885608893998
+	ut -1.9669235411984138
+	ugs -3.137986732723532
+	su -2.043540889778491
+	os -1.5197364445046977
+	is -1.3855504193789692
+	es -1.7845200371220216
+	as -1.9761206182998154
+	s -1.888536874926363
+	u -1.2462912060840163
+Get candidates of word: to
+	no -2.4352071032407476
+	lo -1.7271925661371608
+	ty -1.8095597146352678
+	ho -2.2132520521963968
+	fo -2.1565491513317814
+	do -1.3883211531993778
+	toe -2.6005645322510156
+	two -2.6190933306267428
+	bo -2.2972131959896416
+	ton -1.534569994019397
+	tom -2.3408845758128662
+	top -1.9834007381805383
+	too -1.9206851043184836
+	yo -2.0288035578502046
+	tot -2.2946357731018305
+	wo -1.5663444390614278
+	tos -2.081707270097349
+	so -1.594362682456024
+	tow -2.5234863323432277
+	toy -3.2415464805965484
+	mo -2.0418311450459505
+	tao -2.0357631696649596
+	go -1.616668945086579
+	eo -2.500667653100231
+	co -2.0383110083928107
+	ta -1.3482406547122523
+	ao -2.730513112669299
+	tb -3.0755469613925306
+	o -2.46014581749175
+	tc -3.1209028176145273
+	td -2.6705550695214364
+	te -1.3607500619117379
+	wto -1.8458728742642179
+	t -1.6312672624137488
+	zo -2.0043213737826426
+	ti -1.91803033678488
+	tk -2.7520484478194387
+	tho -1.5779136497799646
+	to -0.0377885608893998
+	tp -1.9767428871861976
+	ro -2.1175725752251853
+	tr -2.999782798454136
+	po -2.2023066418924566
+	ts -2.656816638044169
+Get candidates of word: measure
+	measured -2.013577321661464
+	measures -1.5653500720384592
+	measure -0.0377885608893998
+Get candidates of word: a
+	ua -2.847572659142112
+	ma -1.9563485484631127
+	ea -2.133379211923519
+	ab -2.2511165453321484
+	ad -1.8474551393248877
+	ae -2.944811558558846
+	af -2.366236123718293
+	ag -1.8454425814697755
+	ah -2.201738416661712
+	ai -1.454219885829706
+	ak -2.4720246977002813
+	va -3.0398105541483504
+	al -1.4503923452869865
+	am -2.461198288622493
+	an -1.5459369852954536
+	ra -1.8415382292480365
+	ap -2.1912646619703375
+	ar -1.300142774759088
+	as -1.8299925826215775
+	na -2.562530768862261
+	at -1.5919042292926635
+	au -1.3698739247997676
+	av -3.044147620878723
+	ja -2.53655844257153
+	ay -2.782830805202592
+	fa -1.7638022240745925
+	ba -1.9462416639508826
+	wa -1.689826624896149
+	sa -1.8605683404304916
+	ka -2.2911467617318855
+	ga -2.2521592696791632
+	ca -1.5428557770400408
+	a -0.0377885608893998
+	c -1.7300898049134041
+	d -2.655138434811382
+	e -0.6760247438190022
+	h -2.0472748673841794
+	i -0.7370038600536867
+	k -2.1818435879447726
+	ta -2.5291307966497025
+	n -2.4059721038560276
+	o -0.8803622208749401
+	pa -1.914747484735908
+	r -2.9232440186302764
+	s -1.3858615157343122
+	t -2.0387525889920166
+	la -1.7363965022766423
+	u -1.5708022975975204
+	w -2.0755469613925306
+	ha -2.3201462861110542
+	y -1.5440680443502757
+	da -1.6791933646869357
+Get candidates of word: wide
+	tide -3.1436392352745433
+	wider -1.2201963906849795
+	side -3.1087904555997716
+	aide -3.2835273648616936
+	wide -0.0377885608893998
+	ride -2.791573698842515
+	wie -2.2739801146666
+	hide -3.1727488389827436
+	wire -1.9001765232191763
+	wise -2.0479235523171826
+	wade -1.5015776958751967
+	wides -1.245091979252046
+	wine -3.0395463043793804
+Get candidates of word: variety
+	variety -0.0377885608893998
+Get candidates of word: of
+	ef -1.1775862501426324
+	df -2.2810333672477277
+	orf -1.2225572236428093
+	cf -2.696356388733332
+	or -2.40226138245468
+	os -2.551144908756322
+	af -1.1061647357332183
+	f -1.8481891169913987
+	off -1.2742582757832401
+	o -2.46014581749175
+	sf -2.3860528489403894
+	ob -1.720434958433874
+	rf -2.6807886115066824
+	od -2.5246124580893383
+	oe -3.3420276880874717
+	pf -1.529650305995847
+	of -0.0377885608893998
+	og -2.1958996524092336
+	oh -2.598790506763115
+	oft -2.323252100171687
+	if -1.4930395883176513
+	on -3.147985320683805
+Get candidates of word: conditions
+	condition -1.6275365362891339
+	conditions -0.0377885608893998
 SoS this assay allowed us to measure ar wide variety ef conditions EoS: -62.72965004222634
 SoS this essay allowed us to measure a wide variety of conditions EoS: -58.718807556494234
 ]]></system-out>
