@@ -45,142 +45,72 @@
 \begin{document}
 \maketitle
 \section{Algorithms}
-\subsection{Alpha-Beta Search}
+\subsection{Candidate words}
 \begin{algorithm}[H]
-\caption{Alpha-Beta-Search(int depth)}
+\caption{getCandidateWords(String word, double numWords)}
 \begin{algorithmic}
-	\State Let s be the current state
-	\State bestMove $\gets$ null
-	\State bestValue $\gets -\infty$
-	\ForAll{Moves m}
-		\State Do(m)
-		\State value $\gets$ AlphaBetaMin(s, $-\infty$, $\infty$, depth)
-		\If{value $>$ bestValue}
-			\State bestValue $\gets$ value
-			\State bestMove $\gets m$
-		\EndIf
-		\State Undo(m)
-	\EndFor
+\State ZET IK NOG OM IN PSEUDOCODE...
+\State $mapOfWords$ to be filled with all candidate words
+\State Get all words by inserting one letter for every letter in the alphabet at one position of the word for every possible position of the word and put them in $mapOfWords$.
+\State Get all words by deleting one letter of the word for every letter of the word and put them in $mapOfWords$.
+\State Get all words by transpositioning two letters of the word for every two letters of the word and put them in $mapOfWords$.
+\State Get all words by substituting a letter of the word with another letter for every letter in the alphabet and every letter of the word and put them in $mapOfWords$.
+\State For all words in $mapOfWords$, the noisy channel probability is added by dividing the confusion count with the normalization of the word.
+\State $resultMapOfWords$ to be filled with possible good candidate words
+\State Put all candidate words with a higher probability than 0 in $resultMapOfWords$.
+\State For all words in $resultMapOfWords$, the word probability is added by taking the sum of the $log_10$ of the noisy channel probability and the $log_10$ of the word probability as the frequency of the word divided by the number of monograms + the number of words.
+\State Put the word itself if it is contained in the vocabulary and add the word probability of the $log_10$ of the number of words - 1 divided by the number of words if the number of words is higher than 1. Else add word probability of 0.5.
+\State Return $resultMapOfWords$
 \end{algorithmic}
 \end{algorithm}
 
+This function gets all the candidate words of the input word. These candidate words have a maximum Damerau-Levenshtein distance of 1 which means that the word is only altered by at most 1 insertion, deletion, transposition or substitution. The candidate words with a noisy channel probability of 0 will then be deleted and the word probability is calculated. This is determined by the sum of the noisy channel probability and the $log_10$ of the frequency of the word divided by the number of monograms added to the number of words.
+Then the word itself is added if it is contained in the vocabular and the word probability is determined by the number of words - 1 divided by the number of words if the number of words is higher than 1. Otherwise, the word probability will be 0.5.
+
+\subsection{Find correct word}
 \begin{algorithm}[H]
-\caption{Alpha-Beta-Min(State s, double alpha, double beta, int d)}
+\caption{findCorrect(String previousSentence, String nextSentence, double currentProbability, int correctionsMade)}
 \begin{algorithmic}
-	\State Check whether the time is up and throw an exception if so
-	\If{d $=$ 0}
-		\Return State-Evaluation(s)
-	\Else
-		\ForAll{Moves m}
-			\State Do(m)
-			\State max $\gets$ Alpha-Beta-Max(s, alpha, beta, d-1)
-			\State beta $\gets$ Min(beta, max)
-			\State Undo(m)
-			\If{alpha $\geq$ beta}
-				\Return alpha
-			\EndIf
-		\EndFor
-		\Return beta
-	\EndIf
+\State TODO
 \end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]
-\caption{Alpha-Beta-Max(State s, double alpha, double beta, int d)}
-\begin{algorithmic}
-	\State Check whether the time is up and throw an exception if so
-	\If{d $=$ 0}
-		\Return State-Evaluation(s)
-	\Else
-		\ForAll{Moves m}
-			\State Do(m)
-			\State max $\gets$ Alpha-Beta-Min(s, alpha, beta, d-1)
-			\State alpha $\gets$ Max(beta, max)
-			\State Undo(m)
-			\If{alpha $\geq$ beta}
-				\Return beta
-			\EndIf
-		\EndFor
-		\Return alpha
-	\EndIf
-\end{algorithmic}
-\end{algorithm}
-
-We implemented the Alpha-Beta algorithm as described in "Introduction to Articial Intelligence" [2]. We decided not to use GameNode's since we did not think that would be necessary and this might be more efficient.
-
-\subsection{Iterative Deepening}
-\begin{algorithm}[H]
-\caption{Iterative-Deepening()}
-\begin{algorithmic}
-	\State bestMove $\gets$ null
-	\For{$d=1, 2, ...$}
-		\State try bestMove $\gets$ Alpha-Beta-Search(d) and return bestMove if exception thrown
-	\EndFor
-\end{algorithmic}
-\end{algorithm}
-
-We call our Alpha-Beta-Search algorithm with increasing depths and when the AI is stopped (an exception is thrown), we return the move found by the last finished run of the algorithm.
-
-\subsection{Evaluation Function}
+\subsection{Good-Turing Smoothing}
 \begin{algorithm} [H]
-\caption{State-Evaluation[State s]}\label{euclid}
+\caption{getSmoothedCount(String $NGram$)}\label{euclid}
 \begin{algorithmic}
-\If {AI has no moves left}
-  \State Return $Integer.MINVALUE$
-\ElsIf {Opponent has no moves left}
-  \State Return $Integer.MAXVALUE$
+\State Construct a sorted map $freqOfFreq$ with the frequency of all occurring words as keys and the frequency of these frequencies as values
+\State $maxFreq \gets$ the most frequent word
+\State $sumCounts \gets$ the sum of all frequencies
+\State $c \gets$ the frequency of the word $NGram$
+\If {$c == 0$}
+  \State Return $freqOfFreq.get(1) / sumCounts$
+\ElsIf {$c == maxFreq$}
+  \State Return $c / sumCounts$
 \Else
-  \ForAll {$pieces$  $p$}
-    \State $pieceValue = 100$
-    \If {$p$ is a king}
-      \State $p.pieceValue *= 2$
-      \If {$p$ is on the side}
-        \State $p.pieceValue += 20$
-      \EndIf
-    \ElsIf {$p$ is black}
-      \If {$p$ is on row $9$}
-        \State $p.pieceValue += 20$
-      \Else
-        \State $p.pieceValue += (9-rowNumber) * 3$
-      \EndIf
-    \Else
-      \If {$p$ is on row $0$}
-        \State $p.pieceValue += 20$
-      \Else
-        \State $p.pieceValue += rowNumber * 3$ 
-      \EndIf
-    \EndIf
-  \EndFor
-  
-  \State blackValue $\sum_{p\epsilon pieces} p.pieceValue $ where $p$ is black.
-  \State whiteValue $\sum_{p\epsilon pieces} p.pieceValue $ where $p$ is white.
-  \If {AI is playing black}
-    \State return $blackValue / whiteValue$
-  \Else
-    \State return $whiteValue / blackValue$ 
-  \EndIf
+  \State $N_c \gets freqOfFreq.get(c)$
+  \State $nextC \gets$ the lowest frequency higher than $c$
+  \State $N_{c+x} \gets freqOfFreq.get(nextC)$
+  \State Return $(c + x) * N_{c+x} / N_c$
 \EndIf
 \end{algorithmic}
 \end{algorithm}
 
-For the evaluation function, a score system is made for the draughts pieces. Initially, every piece is worth 100 points. A king is worth twice as much as a normal piece. Now, for kings it is better to stay at the side of the board rather than somewhere in the middle [1]. So there are 20 points added to the score of a king when it is positioned at the side in order to give this state of position a higher score.
-For normal pieces, the defense line is valuable to keep the opponent from getting a king. So again, 20 points are added to the score of pieces positioned on the first line. Pieces further on the board are more likely to get jumped, but is also more likely to jump it self. Also, the closer it is to the opponent's side, the closer it is to become a king. For every line it is moved forward, the piece receives an extra 3 points to add to it's score. So, a maximum of 24 points can be added, when the piece is one row from becoming a king.\\
-After evaluating each piece value, the final value of the state is calculated as the ratio between the value of the AI's pieces and the value of the opponent's pieces. This will give a better approximation to the value of the state than taking the difference between the two, since for example the state with 5 pieces to 1 is much strong than with 20 pieces to 16, although the difference is the same. 
+For the smoothing of the counts of the words, we chose to use Good-Turing Smoothing with a slight adjustment. The smoothing of the counts is to determine the chance of a word occurring again. The smoothed count will be slightly lower than the concrete count since there are words that have never occurred before. This difference is determined by the frequency of the frequency of the words. With the Good-Turing algorithm the smoothed count will be determined be the frequency of the frequency of the word and the freq. of the frequency + 1. But since there are gaps between frequencies, especially when the frequency gets higher, it serves no value to take the freq. of the frequency + 1 since this is zero. In our implementation we therefore take the next occurring frequency to get a value. When the gap between frequencies is high, this gets more unreliable. There is a solution to avoid this by drawing a line of the frequencies which is the best-fit power law, but we did not have the time and knowledge to implement this yet.
 
 \section{Results}
-Depending on the allowed time and the state of the board, the Alpha-Beta search usually reaches depths between 6 and 10. This can be seen by letting the player play a match and watching the application output (the depths are printed). The player itself also gives good results; it wins from all the default players and it also won from every human being that we let it play to (we tested it on seven people). This result can be reproduced by trying to play against it, you will very likely lose. Our evaluation function also gave good results. If we copy the AlphaBetaPlayer and replace its evaluationfunction with the more obvious evaluation function of counting every piece as one, counting kings as two and returning the difference of scores between the team, then this player will lose against our AlphaBetaPlayer.
+The results of our spell checker are quite good. Most of the words are corrected correctly, with some exceptions. There are however also some words that are spelled correctly, but are corrected. This problem appears mostly when the correction is a word which occurs much more frequent than the corrected word, but in the particular sentence, the corrected word is in fact the correct word.
 
 \section{References}
 \begin{enumerate}
-\item http://www.checkerstip.com/handling-a-king-piece-in.html
-\item Ertel, W. Introduction to Artificial Intelligence.
+\item None
 \end{enumerate}
 
 \section{Contribution}
-Martijn Gösgens: I implemented and tested the Alpha-Beta search with iterative deepening. I also tested the evaluation function and contributed to it slightly (I came up with the idea of looking at the relative difference of the scores instead of the absolute difference). \\
-Dominique Sommers: I designed the evaluation function for the AI. In order to do this, I studied good draughts patterns and searched for strong positions of particular pieces. These could be defended pieces (having a piece behind them, so they can not be jumped), defending pieces (having a piece in front of them), elbow pattern (pieces defending and being defended). However, I decided to keep the evaluation simple, since the method is called many times.
+Martijn Gösgens: TODO. \\
+Dominique Sommers: I implemented the Good-Turing Smoothing algorithm and decided to take the next frequency instead of add-one smoothening or the more complicated Good-Turing Smoothing with the best-fit power law. Besides that, I wrote most part of the report. I also made a function to get the best candidate word for every word in the sentence, but this was later adjusted and corrected by Martijn adding the bigrams of the sentences.
 
 \section{Manual}
-Add the AI player name to the Draughts game and it can play against other AI's or against a human. You can let it play against the default players and see it win every time, you can let a few average people play against it and see the majority lose. You can also let it play against the older versions of the AlphaBetaPlayer (AlphaBetaPlayerV0, with evaluation function as described in the results) and see it win.
+The spellchecker takes sentences as input. These can consist of multiple words and multiple sentences. An important thing to note is that the spellchecker can only correct words with a Damerau-Levenshtein distance of 1 which means that each input word may only be altered by at most 1 insertion, deletion, transposition or substitution. The words in the input sentences may not have interpunction or any other kind of character than the english alphabet except for the single apostrophe ('). All letters of all words should be in lower case. After giving the input, the spellchecker will check for spelling mistakes and automatically replace them to the correct spelling of the word.
 
 \end{document}
