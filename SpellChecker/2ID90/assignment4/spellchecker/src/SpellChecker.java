@@ -43,7 +43,7 @@ public class SpellChecker {
                 "the development of idabetes is present in mice that carry a transgen",
                 "the development of diabetes us present in mice that harry a transgen",
                 "why won't this spellchecker work",
-                "black poeple"
+                "measure a family"
             };
             
             for(String s0: sentences) {

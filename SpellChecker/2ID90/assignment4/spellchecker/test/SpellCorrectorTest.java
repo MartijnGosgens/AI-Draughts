@@ -58,13 +58,13 @@ public class SpellCorrectorTest {
      */
     @Test
     public void testGetCandidateWords() {
-        String[] words = new String[]{
-            "this"//, "the", "home", "locations", "there", "were", "traces", "of",
-            //"water"
-        };
+//        String[] words = new String[]{
+//            "this","essay"
+//        };
+        String[] words = "this assay allowed us to measure a wide variety of conditions".split(" ");
         for (String w : words) {
             System.out.println("Get candidates of word: " + w);
-            for (Entry<String,Double> e : instance.getCandidateWords(w,2).entrySet()) {
+            for (Entry<String,Double> e : instance.getCandidateWords(w,12).entrySet()) {
                 System.out.println("\t"+e.getKey()+" "+e.getValue());
             }
         }
