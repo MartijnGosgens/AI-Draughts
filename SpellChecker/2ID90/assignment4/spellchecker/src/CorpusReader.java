@@ -26,17 +26,26 @@ public class CorpusReader
     private Set<String> vocabulary;
     private int numWords = 0;
     
-    private int maxFreq;
-    private int sumCounts;
-    private TreeMap<Integer, Integer> freqOfFreq;
+    private int maxFreqMono;
+    private int maxFreqBi;
+    private int sumCountsMono;
+    private int sumCountsBi;
+    private TreeMap<Integer, Integer> freqOfFreqMonoGrams;
+    private TreeMap<Integer, Integer> freqOfFreqBiGrams;
         
     public CorpusReader() throws IOException
     {  
         readNGrams();
         readVocabulary();
-        makeFreqOfFreqTreeMap();
-        maxFreq = freqOfFreq.lastKey();
-        sumCounts = getAllCount();
+        makeFreqOfFreqTreeMaps();
+        maxFreqMono = freqOfFreqMonoGrams.lastKey();
+        maxFreqBi = freqOfFreqBiGrams.lastKey();
+        sumCountsMono = getAllCountMono();
+        sumCountsBi = getAllCountBi();
+        System.out.println("maxfreqmono: " + maxFreqMono + "::MaxFreqbi: " + maxFreqBi);
+        System.out.println("summono: " + sumCountsMono + "::sumbi: " + sumCountsBi);
+        System.out.println("jemoeder a: " + getSmoothedCount("a"));
+        System.out.println("jemoeder ua: " + getSmoothedCount("ua"));
     }
     
     /**
@@ -155,24 +164,43 @@ public class CorpusReader
             * with N_1 is the frequency of words with frequency 1 and
             * N is the sum of frequencies of all words
             */
-            smoothedCount = (double) freqOfFreq.get(1) / sumCounts;
-        } else if (c == maxFreq) {
+            if (!NGram.contains(" ")){
+                smoothedCount = (double) freqOfFreqMonoGrams.get(1) / sumCountsMono;
+            } else {
+                smoothedCount = (double) freqOfFreqBiGrams.get(1) / sumCountsBi;
+            }
+        } else if (c == maxFreqMono && !NGram.contains(" ") || c == maxFreqBi && NGram.contains(" ")) {
             /* If the word ngram has the highest frequency, divide by the sum of
             * frequencies of all words.      
             */
-            smoothedCount = (double) c / sumCounts;
+            if (!NGram.contains(" ")){
+                smoothedCount = (double) c / sumCountsMono;
+            } else {
+                smoothedCount = (double) c / sumCountsBi;
+            }
+            
         } else {
             /* c* = ((c+1) * N_c+1) / N_c
             * where c is the frequency of NGram and
             * N_c is the frequency of frequency c
             * smoothedCount is c* / sumcounts
             */
-            int Nc = freqOfFreq.get(c);
-            int nextC = freqOfFreq.ceilingKey(c);
-            int Nc1 = freqOfFreq.get(nextC);
+            if (!NGram.contains(" ")){
+                int Nc = freqOfFreqMonoGrams.get(c);
+                int nextC = freqOfFreqMonoGrams.ceilingKey(c);
+                int Nc1 = freqOfFreqMonoGrams.get(nextC);
 
-            double evalC = (double) ((c + (nextC - c)) * Nc1) / Nc;
-            smoothedCount = evalC / sumCounts;
+                double evalC = (double) (nextC * Nc1) / Nc;
+                smoothedCount = (double) c / sumCountsMono;
+            } else {
+                int Nc = freqOfFreqBiGrams.get(c);
+                int nextC = freqOfFreqBiGrams.ceilingKey(c);
+                int Nc1 = freqOfFreqBiGrams.get(nextC);
+
+                double evalC = (double) (nextC * Nc1) / Nc;
+                smoothedCount = (double) c / sumCountsBi;
+            }
+            
         }
         return smoothedCount;
     }
@@ -194,26 +222,50 @@ public class CorpusReader
      * Construct the tree map with frequencies as keys and freq. of freq. 
      * as values.
      */
-    private void makeFreqOfFreqTreeMap(){
-        freqOfFreq = new TreeMap<>();
+    private void makeFreqOfFreqTreeMaps(){
+        freqOfFreqMonoGrams = new TreeMap<>();
+        freqOfFreqBiGrams = new TreeMap<>();
         for (Entry<String,Integer> entry : ngrams.entrySet()) {
             int value = entry.getValue();
-            if (!freqOfFreq.containsKey(entry.getValue())) {
-                freqOfFreq.put(value , 1);
-            } else {
-                freqOfFreq.put(value , freqOfFreq.get(entry.getValue())+1);
+            if (!entry.getKey().contains(" ")) {
+                if (!freqOfFreqMonoGrams.containsKey(entry.getValue())) {
+                    freqOfFreqMonoGrams.put(value , 1);
+                } else {
+                    freqOfFreqMonoGrams.put(value , freqOfFreqMonoGrams.get(entry.getValue())+1);
+                }
+            }
+            else {
+                if (!freqOfFreqBiGrams.containsKey(entry.getValue())) {
+                    freqOfFreqBiGrams.put(value , 1);
+                } else {
+                    freqOfFreqBiGrams.put(value , freqOfFreqBiGrams.get(entry.getValue())+1);
+                }
             }
         }
     }
     
     /**
-     * Returns the sum of the frequencies of all words in the vocabulary.
+     * Returns the sum of the frequencies of all single words in the vocabulary.
      * @return sum
      */
-    private int getAllCount(){
+    private int getAllCountMono(){
         int result = 0;
         for (Entry<String, Integer> entry : ngrams.entrySet()){
-            result += entry.getValue();
+            if (!entry.getKey().contains(" "))
+                result += entry.getValue();
+        }
+        return result;
+    }
+    
+    /**
+     * Returns the sum of the frequencies of all bigrams in the vocabulary.
+     * @return sum
+     */
+    private int getAllCountBi(){
+        int result = 0;
+        for (Entry<String, Integer> entry : ngrams.entrySet()){
+            if (entry.getKey().contains(" "))
+                result += entry.getValue();
         }
         return result;
     }
@@ -227,9 +279,9 @@ public class CorpusReader
         double occurrenceFollowUp = getSmoothedCount(previous + " " + next);
 //        System.out.println("Smoothed:::: prev :: " + previous + ":::" + occurrencePrevious);
 //        System.out.println("Smoothed:::: prevnext :: " + previous + " " + next + ":::" + occurrenceFollowUp);
-        if (occurrenceFollowUp > occurrencePrevious) {
-            System.out.println("P("+next+"|"+previous+")="+occurrenceFollowUp+"/"+occurrencePrevious+">1");
-        }
+//        if (occurrenceFollowUp > occurrencePrevious) {
+//            System.out.println("P("+next+"|"+previous+")="+occurrenceFollowUp+"/"+occurrencePrevious+">1");
+//        }
         return occurrenceFollowUp / occurrencePrevious;
 
         // No smoothening
