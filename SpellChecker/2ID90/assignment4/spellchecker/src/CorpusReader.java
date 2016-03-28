@@ -34,7 +34,6 @@ public class CorpusReader
     //private TreeMap<Integer, Integer> freqOfFreq;
     private TreeMap<Integer, Integer> freqOfFreqMono;
     private TreeMap<Integer, Integer> freqOfFreqBi;
-    
         
     public CorpusReader() throws IOException
     {  
@@ -242,9 +241,6 @@ public class CorpusReader
     public double conditionalProbability(String next, String previous) {
         double occurrencePrevious = wordProbability(previous);
         double occurrenceFollowUp = combinationProbability(previous, next);
-        if (occurrenceFollowUp > occurrencePrevious) {
-            System.out.println("P("+next+"|"+previous+")="+occurrenceFollowUp+"/"+occurrencePrevious+">1");
-        }
         return occurrenceFollowUp / occurrencePrevious;
     
     }
