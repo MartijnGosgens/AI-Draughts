@@ -162,23 +162,15 @@ public class CorpusReader
             */
             smoothedCount = (double) c / sumCounts;
         } else {
+            /* c* = ((c+1) * N_c+1) / N_c
+            * where c is the frequency of NGram and
+            * N_c is the frequency of frequency c
+            */
             int Nc = freqOfFreq.get(c);
-            if (freqOfFreq.ceilingKey(c) == null){
-                /* ngram has highest frequency so there exists no next.
-                * smoothed count will be the frequency divided by sum of all 
-                * counts.
-                */
-                smoothedCount = (double) c;
-            } else {
-                /* c* = ((c+1) * N_c+1) / N_c
-                * where c is the frequency of NGram and
-                * N_c is the frequency of frequency c
-                */
-                int nextC = freqOfFreq.ceilingKey(c);
-                int Nc1 = freqOfFreq.get(nextC);
+            int nextC = freqOfFreq.ceilingKey(c);
+            int Nc1 = freqOfFreq.get(nextC);
 
-                smoothedCount = (double) ((c + (nextC - c)) * Nc1) / Nc;
-            }
+            smoothedCount = (double) ((c + (nextC - c)) * Nc1) / Nc;
         }
         return smoothedCount;
     }
@@ -240,15 +232,14 @@ public class CorpusReader
      * {@code previous}.
      */
     public double conditionalProbability(String next, String previous) {
-        // Smoothening enters an infinite loop every time it sees "the".
-//        double occurrencePrevious = getSmoothedCount(previous);
-//        double occurrenceFollowUp = getSmoothedCount(previous + " " + next);
+        double occurrencePrevious = getSmoothedCount(previous);
+        double occurrenceFollowUp = getSmoothedCount(previous + " " + next);
 //        System.out.println("Smoothed:::: prev :: " + previous + ":::" + occurrencePrevious);
 //        System.out.println("Smoothed:::: prevnext :: " + previous + " " + next + ":::" + occurrenceFollowUp);
-//        if (occurrenceFollowUp > occurrencePrevious) {
-//            System.out.println("P("+next+"|"+previous+")="+occurrenceFollowUp+"/"+occurrencePrevious+">1");
-//        }
-//        return occurrenceFollowUp / occurrencePrevious;
+        if (occurrenceFollowUp > occurrencePrevious) {
+            System.out.println("P("+next+"|"+previous+")="+occurrenceFollowUp+"/"+occurrencePrevious+">1");
+        }
+        return occurrenceFollowUp / occurrencePrevious;
 
         // No smoothening
 //        double total = getNGramCount(previous);
@@ -258,14 +249,14 @@ public class CorpusReader
 //        return followUp / total;
 
         // AddOne Smoothening:
-        double total = getNGramCount(previous) + 1;
-        double followUp = getNGramCount(previous + " " + next) + 1;
-//        System.out.println("Smoothed:::: prev :: " + previous + ":::" + total + ":::" + i++);
-//        System.out.println("Smoothed:::: prevnext :: " + previous + " " + next + ":::" + followUp + ":::" + i++);
-        if (followUp > total) {
-            System.out.println("P("+next+"|"+previous+")="+followUp+"/"+total+">1");
-        }
-        return followUp / total;
+//        double total = getNGramCount(previous) + 1;
+//        double followUp = getNGramCount(previous + " " + next) + 1;
+////        System.out.println("Smoothed:::: prev :: " + previous + ":::" + total + ":::" + i++);
+////        System.out.println("Smoothed:::: prevnext :: " + previous + " " + next + ":::" + followUp + ":::" + i++);
+//        if (followUp > total) {
+//            System.out.println("P("+next+"|"+previous+")="+followUp+"/"+total+">1");
+//        }
+//        return followUp / total;
     
     }
 }
