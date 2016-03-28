@@ -11,7 +11,6 @@ public class SpellCorrector {
     final char[] ALPHABET = "abcdefghijklmnopqrstuvwxyz'".toCharArray();
     final char[] SPACE_ALPHABET = "abcdefghijklmnopqrstuvwxyz ".toCharArray();
     
-    
     public SpellCorrector(CorpusReader cr, ConfusionMatrixReader cmr) 
     {
         this.cr = cr;
@@ -28,13 +27,17 @@ public class SpellCorrector {
      * may be empty if the corrector did not find a plausible correction. The 
      * probability is log10.
      */
-    private SentenceProbabilityPair findCorrect(String previousSentence /*ArrayList<String> previousWords,*/,
-                                                String nextSentence /*ArrayList<String> nextWords*/,
+    private SentenceProbabilityPair findCorrect(String previousSentence,
+                                                String nextSentence,
                                                 double currentProbability,
                                                 int correctionsMade) {
         // We split the sentences so that we can more easily use the words.
         String[] previousWords = previousSentence.trim().split(" ");
         String[] nextWords = nextSentence.trim().split(" ");
+        
+        // Count the number of words, we do not count the "SoS".
+        int numWords = previousWords.length + nextWords.length - 1;
+        
         // When nextSentence is empty, nextWords tends to contain an empty string
         if (nextWords.length == 1 && nextWords[0].length()==0)
             nextWords = new String[]{};
@@ -43,14 +46,10 @@ public class SpellCorrector {
             // Corrected all words, return the sentence
             String sentence = previousSentence+"";
             
-            // See whether the last word can possibly end the sentence
-            if (cr.conditionalProbability("EoS",previousWords[previousWords.length-1]) > 0) {
-                currentProbability += Math.log10(
-                        cr.conditionalProbability("EoS",previousWords[previousWords.length-1])
-                );
-                return new SentenceProbabilityPair(sentence.trim(), currentProbability);
-            } else // If not, return 'nothing'
-                return new SentenceProbabilityPair("",-Double.MAX_VALUE);
+            currentProbability += Math.log10(
+                    cr.conditionalProbability("EoS",previousWords[previousWords.length-1])
+            );
+            return new SentenceProbabilityPair(sentence.trim(), currentProbability);
         } else if (correctionsMade == 2) {
             // Maximal number of corrections made, return the whole sentence with
             // its probability.
@@ -59,27 +58,17 @@ public class SpellCorrector {
             // Adjust probability and add the rest of the words to the sentence
             String lastWord = previousWords[previousWords.length-1];
             for (String nextWord : nextWords) {
-                // Check whether this word can possibly follow the last word.
-                if (cr.conditionalProbability(nextWord, lastWord) > 0) {
-                    currentProbability += Math.log10(
-                            cr.conditionalProbability(nextWord, lastWord)
-                    );
-                    lastWord = nextWord;
-                    sentence += " "+lastWord;
-                } else {
-                    // Else we return 'nothing'
-                    return new SentenceProbabilityPair("",-Double.MAX_VALUE);
-                }
-            }
-            // Check whether we can end this sentence.
-            if (cr.conditionalProbability("EoS", lastWord) > 0) {
                 currentProbability += Math.log10(
-                        cr.conditionalProbability("EoS", lastWord)
+                        cr.conditionalProbability(nextWord, lastWord)
                 );
-                return new SentenceProbabilityPair(sentence.trim(), currentProbability);
-            } else {
-                return new SentenceProbabilityPair("",-Double.MAX_VALUE);
+                lastWord = nextWord;
+                sentence += " "+lastWord;
             }
+            
+            currentProbability += Math.log10(
+                    cr.conditionalProbability("EoS", lastWord)
+            );
+            return new SentenceProbabilityPair(sentence.trim(), currentProbability);
         } else {
             // The corrector is not finished and we will try to correct the next
             // word.
@@ -89,34 +78,33 @@ public class SpellCorrector {
             // We find the best possible correction for nextSentence
             SentenceProbabilityPair best = new SentenceProbabilityPair("",-Double.MAX_VALUE);
             
-            for (Entry<String, Double> candidate : getCandidateWords(nextWord).entrySet()) {
+            for (Entry<String, Double> candidate : 
+                    getCandidateWords(nextWord, numWords).entrySet()) {
                 // Check whether this word can possibly follow.
-                if (candidate.getValue() * cr.conditionalProbability(candidate.getKey(), lastWord) > 0) {
-                    double nextProbability = currentProbability + Math.log10(
-                            candidate.getValue()
-                            * cr.conditionalProbability(candidate.getKey(), lastWord)
-                    );
+                double nextProbability = currentProbability + 
+                        candidate.getValue() + Math.log10(
+                            cr.conditionalProbability(candidate.getKey(), lastWord)
+                        );
 
-                    // Add the candidate to the sentence
-                    String newPreviousSentence = previousSentence + " " + candidate.getKey();
+                // Add the candidate to the sentence
+                String newPreviousSentence = previousSentence + " " + candidate.getKey();
 
-                    // Remove from the nextSentence
-                    String newNextSentence = "";
-                    for (int i = 1; i < nextWords.length; ++ i) {
-                        newNextSentence += " "+nextWords[i];
-                    }
-
-                    // Recursive call
-                    SentenceProbabilityPair candidateSentence;
-                    candidateSentence = findCorrect(
-                            newPreviousSentence, newNextSentence, 
-                            nextProbability,
-                            correctionsMade + (candidate.getKey().equals(nextWord) ? 0 : 1));
-
-                    // Compare
-                    if (candidateSentence.probability > best.probability)
-                        best = candidateSentence;
+                // Remove from the nextSentence
+                String newNextSentence = "";
+                for (int i = 1; i < nextWords.length; ++ i) {
+                    newNextSentence += " "+nextWords[i];
                 }
+
+                // Recursive call
+                SentenceProbabilityPair candidateSentence;
+                candidateSentence = findCorrect(
+                        newPreviousSentence, newNextSentence, 
+                        nextProbability,
+                        correctionsMade + (candidate.getKey().equals(nextWord) ? 0 : 1));
+
+                // Compare
+                if (candidateSentence.probability > best.probability)
+                    best = candidateSentence;
             }
             return best;
         }
@@ -136,16 +124,16 @@ public class SpellCorrector {
         
         // Remove StartOfSentence ("SoS")
         try {
-        finalSuggestion = bestCorrection.getSentence().split("SoS ")[1];
-        return finalSuggestion;
+            finalSuggestion = bestCorrection.getSentence().split("SoS ")[1];
+            return finalSuggestion;
         } catch (ArrayIndexOutOfBoundsException e) {
             // The corrector was not able to correct the sentence, return original
             return phrase;
         }
     }    
       
-    /** returns a map with candidate words and their noisy channel probability. **/
-    public Map<String,Double> getCandidateWords(String word)
+    /** returns a map with candidate words and their noisy channel probability (log10). **/
+    public Map<String,Double> getCandidateWords(String word, double numWords)
     {
         Map<String,Double> mapOfWords = new HashMap<>();
         
@@ -194,22 +182,41 @@ public class SpellCorrector {
             }
         }
         
-        // Add the word itself if it is contained in the dictionary.
-        if (cr.inVocabulary(word)) {
-            mapOfWords.put(word, 250.0d);
-        }
-        
-        // Remove zero probabilities
+        // Remove zero probabilities, normalise, log and multiply by word probability P(w)
         Map<String,Double> newMapOfWords = new HashMap<>();
         for (Entry<String, Double> e : mapOfWords.entrySet()) {
             if (e.getValue()>0) {
-                newMapOfWords.put(e.getKey(), e.getValue());
+                newMapOfWords.put(
+                        e.getKey(), Math.log10(cr.wordProbability(e.getKey()))
+                        + Math.log10(
+                                cr.getSmoothedCount(e.getKey())*e.getValue() 
+                                / getNumPossibleErrors(e.getKey())
+                        )
+                );
             }
+        }
+        
+        // Add the word itself if it is contained in the dictionary.
+        if (cr.inVocabulary(word)) {
+            // We count the number of words in the sentence {@code numWords}. 
+            // The number of errors in this sentence can either be zero, one or  
+            // two. We assume each of the three events have equal probability and 
+            // then estimate the chance that the word is correctly typed by 
+            // {@code (numWords - 1) / numWords if numWords > 0} and 0.5 if
+            // {@code numWords == 1}.
+            newMapOfWords.put(word, Math.log10(
+                    cr.wordProbability(word) *
+                    (numWords > 1 ? (numWords - 1)/numWords : 0.5)
+            ));
         }
         
         return newMapOfWords;
     }        
 
+    /**
+     * Returns the number of errors that can be made with {@code correct} as 
+     * correction.
+     */
     double getNormalizationCount(String correct) {
         double count = 0;
         for (char c : SPACE_ALPHABET) {
@@ -221,7 +228,19 @@ public class SpellCorrector {
     }
     
     /**
-     * Correct {@code original} replacing the {@code index}th letter with 
+     * Returns the count of errors that could possible have been made in the word.
+     */
+    double getNumPossibleErrors(String correctWord) {
+        double count = 0;
+        for (int i = 0; i < correctWord.length(); ++ i) {
+            count += getNormalizationCount(correctWord.charAt(i)+"");
+            count += getNormalizationCount((i > 0 ? correctWord.charAt(i-1): " ")+""+correctWord.charAt(i));
+        }
+        return count;
+    }
+    
+    /**
+     * Correct {@code original} by replacing the {@code index}th letter with 
      * {@code insertion} (if in vocabulary).
      */
     Correction insert(String original, int index, char insertion) {
@@ -234,7 +253,7 @@ public class SpellCorrector {
             double probability = cmr.getConfusionCount(errorLetters, correctLetters);
             
             // Normalise
-            probability /= getNormalizationCount(correctLetters);
+            //probability /= getNormalizationCount(correctLetters);
             
             return new Correction(original, correct, probability);
         } else {
@@ -254,7 +273,7 @@ public class SpellCorrector {
             double probability = cmr.getConfusionCount(errorLetters, correctLetters);
             
             // Normalise
-            probability /= getNormalizationCount(correctLetters);
+            //probability /= getNormalizationCount(correctLetters);
             
             return new Correction(original, correct, probability);
         } else {
@@ -276,7 +295,7 @@ public class SpellCorrector {
             double probability = cmr.getConfusionCount(errorLetters, correctLetters);
             
             // Normalise
-            probability /= getNormalizationCount(correctLetters);
+            //probability /= getNormalizationCount(correctLetters);
             
             return new Correction(original, correct, probability);
         } else {
@@ -299,7 +318,7 @@ public class SpellCorrector {
                     ""+insertion);
             
             // Normalise
-            probability /= getNormalizationCount(correctLetters);
+            //probability /= getNormalizationCount(correctLetters);
             
             return new Correction(original, correct, probability);
         } else {
@@ -308,10 +327,6 @@ public class SpellCorrector {
     }
 }
 
-/**
- * 
- * @author s147569
- */
 class Correction {
     String error;
     String correct;
@@ -339,6 +354,9 @@ class SentenceProbabilityPair {
     public SentenceProbabilityPair(String s, double p) {
         sentence = s;
         probability = p;
+        if (p>1) {
+            System.out.println(s+" has probability higher than one");
+        }
     }
     
     public String getSentence() {

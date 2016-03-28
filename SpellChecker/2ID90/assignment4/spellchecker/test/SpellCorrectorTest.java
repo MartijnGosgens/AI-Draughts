@@ -59,12 +59,12 @@ public class SpellCorrectorTest {
     @Test
     public void testGetCandidateWords() {
         String[] words = new String[]{
-            "at", "the", "home", "locations", "there", "were", "traces", "of",
-            "water"
+            "this"//, "the", "home", "locations", "there", "were", "traces", "of",
+            //"water"
         };
         for (String w : words) {
             System.out.println("Get candidates of word: " + w);
-            for (Entry<String,Double> e : instance.getCandidateWords(w).entrySet()) {
+            for (Entry<String,Double> e : instance.getCandidateWords(w,2).entrySet()) {
                 System.out.println("\t"+e.getKey()+" "+e.getValue());
             }
         }
@@ -103,6 +103,24 @@ public class SpellCorrectorTest {
      */
     @Test
     public void testNoisyChannelProbability() {
+        try {
+            CorpusReader cr = new CorpusReader();
+            String[] sentences = new String[]{
+                "SoS this assay allowed us to measure ar wide variety ef conditions EoS",
+                "SoS this essay allowed us to measure a wide variety of conditions EoS"
+            };
+            for (String s : sentences) {
+                double logProb = 0;
+                String[] words = s.split(" ");
+                for (int i =1; i < words.length; ++ i) {
+                    logProb += Math.log10(cr.conditionalProbability(words[i], words[i-1]));
+                    logProb += Math.log10(cr.wordProbability(words[i]));
+                }
+                System.out.println(s+": "+logProb);
+            }
+        } catch(IOException e) {
+            
+        }
     }
     
 }

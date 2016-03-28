@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -19,7 +20,11 @@ public class CorpusReader
     final static String VOCFILE_LOC = "samplevoc.txt";
     
     private HashMap<String,Integer> ngrams;
+    private int numMonograms = 0;
+    private int numBigrams = 0;
+    
     private Set<String> vocabulary;
+    private int numWords = 0;
     
     private int maxFreq;
     private int sumCounts;
@@ -73,6 +78,13 @@ public class CorpusReader
             try {
                 count = Integer.parseInt(s1);
                 ngrams.put(s2, count);
+                
+                // We count the number of bigrams and monograms for normalizaton
+                if (s2.contains(" ")) {
+                    numBigrams += count;
+                } else {
+                    numMonograms += count;
+                }
             } catch (NumberFormatException nfe) {
                 throw new NumberFormatException("NumberformatError: " + s1);
             }
@@ -90,6 +102,7 @@ public class CorpusReader
         {
             String line = in.readLine();
             vocabulary.add(line);
+            numWords ++;
         }
     }
     
@@ -155,7 +168,7 @@ public class CorpusReader
                 * smoothed count will be the frequency divided by sum of all 
                 * counts.
                 */
-                smoothedCount = (double) c / sumCounts;
+                smoothedCount = (double) c;
             } else {
                 /* c* = ((c+1) * N_c+1) / N_c
                 * where c is the frequency of NGram and
@@ -171,17 +184,26 @@ public class CorpusReader
     }
     
     /**
+     * Returns the probability that a certain word is {@code w}. (uses Add-one)
+     * @param w
+     * @return 
+     */
+    double wordProbability(String w) {
+        return (getNGramCount(w)+1)/(double)(numMonograms + numWords);
+    }
+    
+    /**
      * Construct the tree map with frequencies as keys and freq. of freq. 
      * as values.
      */
     private void makeFreqOfFreqTreeMap(){
         freqOfFreq = new TreeMap<>();
-        Collection values = ngrams.values();
-        Iterator iter = values.iterator();
-        while(iter.hasNext()){
-            int value = (int) iter.next();
-            if (!freqOfFreq.containsKey(value)){
-                freqOfFreq.put(value, getFreqOfFreqC(value));
+        for (Entry<String,Integer> entry : ngrams.entrySet()) {
+            int value = entry.getValue();
+            if (!freqOfFreq.containsKey(entry.getValue())) {
+                freqOfFreq.put(value , 1);
+            } else {
+                freqOfFreq.put(value , freqOfFreq.get(entry.getValue())+1);
             }
         }
     }
@@ -207,8 +229,8 @@ public class CorpusReader
      */
     private int getAllCount(){
         int result = 0;
-        for (int value : ngrams.values()){
-            result += value;
+        for (Entry<String, Integer> entry : ngrams.entrySet()){
+            result += entry.getValue();
         }
         return result;
     }
@@ -219,15 +241,31 @@ public class CorpusReader
      */
     public double conditionalProbability(String next, String previous) {
         // Smoothening enters an infinite loop every time it sees "the".
-        double occurrencePrevious = getSmoothedCount(previous);
-        double occurrenceFollowUp = getSmoothedCount(previous + " " + next);
-        System.out.println("Smoothed:::: prev :: " + previous + ":::" + occurrencePrevious);
-        System.out.println("Smoothed:::: prevnext :: " + previous + " " + next + ":::" + occurrenceFollowUp);
-        return occurrenceFollowUp / occurrencePrevious;
+//        double occurrencePrevious = getSmoothedCount(previous);
+//        double occurrenceFollowUp = getSmoothedCount(previous + " " + next);
+//        System.out.println("Smoothed:::: prev :: " + previous + ":::" + occurrencePrevious);
+//        System.out.println("Smoothed:::: prevnext :: " + previous + " " + next + ":::" + occurrenceFollowUp);
+//        if (occurrenceFollowUp > occurrencePrevious) {
+//            System.out.println("P("+next+"|"+previous+")="+occurrenceFollowUp+"/"+occurrencePrevious+">1");
+//        }
+//        return occurrenceFollowUp / occurrencePrevious;
+
+        // No smoothening
 //        double total = getNGramCount(previous);
 //        double followUp = getNGramCount(previous + " " + next);
 //        System.out.println("Smoothed:::: prev :: " + previous + ":::" + total + ":::" + i++);
 //        System.out.println("Smoothed:::: prevnext :: " + previous + " " + next + ":::" + followUp + ":::" + i++);
 //        return followUp / total;
+
+        // AddOne Smoothening:
+        double total = getNGramCount(previous) + 1;
+        double followUp = getNGramCount(previous + " " + next) + 1;
+//        System.out.println("Smoothed:::: prev :: " + previous + ":::" + total + ":::" + i++);
+//        System.out.println("Smoothed:::: prevnext :: " + previous + " " + next + ":::" + followUp + ":::" + i++);
+        if (followUp > total) {
+            System.out.println("P("+next+"|"+previous+")="+followUp+"/"+total+">1");
+        }
+        return followUp / total;
+    
     }
 }
