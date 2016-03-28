@@ -49,17 +49,45 @@
 \begin{algorithm}[H]
 \caption{getCandidateWords(String word, double numWords)}
 \begin{algorithmic}
-\State ZET IK NOG OM IN PSEUDOCODE...
 \State $mapOfWords$ to be filled with all candidate words
-\State Get all words by inserting one letter for every letter in the alphabet at one position of the word for every possible position of the word and put them in $mapOfWords$.
-\State Get all words by deleting one letter of the word for every letter of the word and put them in $mapOfWords$.
-\State Get all words by transpositioning two letters of the word for every two letters of the word and put them in $mapOfWords$.
-\State Get all words by substituting a letter of the word with another letter for every letter in the alphabet and every letter of the word and put them in $mapOfWords$.
-\State For all words in $mapOfWords$, the noisy channel probability is added by dividing the confusion count with the normalization of the word.
+\ForAll {Letters in the alphabet}
+  \ForAll {Positions in word}
+    \State Insert letter in position
+    \State Put resulting string in $mapOfWords$
+  \EndFor
+\EndFor
+\ForAll {Letters in word}
+  \State Delete letter from word
+  \State Put resulting string in $mapOfWords$
+\EndFor
+\ForAll {Letters "a" in word}
+  \ForAll {Letters "b" in word}
+    \State Swap letters "a" and "b" in word
+    \State Put resulting string in $mapOfWords$
+  \EndFor
+\EndFor
+\ForAll {Letters "a" in the alphabet}
+  \ForAll {Letters "b" in word}
+    \State Replace letter "b" with letter "a" in word
+    \State Put resulting string in $mapOfWords$
+  \EndFor
+\EndFor
 \State $resultMapOfWords$ to be filled with possible good candidate words
-\State Put all candidate words with a higher probability than 0 in $resultMapOfWords$.
-\State For all words in $resultMapOfWords$, the word probability is added by taking the sum of the $log_10$ of the noisy channel probability and the $log_10$ of the word probability as the frequency of the word divided by the number of monograms + the number of words.
-\State Put the word itself if it is contained in the vocabulary and add the word probability of the $log_10$ of the number of words - 1 divided by the number of words if the number of words is higher than 1. Else add word probability of 0.5.
+\ForAll {Words in $mapOfWords$}
+  \State $Noisy Channel Probability \gets confusion Count / Normalization$
+  \If {$Noisy Channel Probability > 0$}
+	\State Put the candidate word in $resultMapOfWords$
+	\State $Probability \gets log_{10}(Noisy Channel Probability) + log_{10}(Word Probability)$
+  \EndIf
+\EndFor
+\If {word itself is contained in the vocabulary}
+  \State Put word in $resultMapOfWords$.
+  \If {$\#words > 1$}
+  	\State $Probability \gets log_{10}((\#words - 1) / \#words)$
+  \Else
+    \State $Probability \gets log_{10}(0.5)$
+  \EndIf
+\EndIf    
 \State Return $resultMapOfWords$
 \end{algorithmic}
 \end{algorithm}
