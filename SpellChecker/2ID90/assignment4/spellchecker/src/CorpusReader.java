@@ -165,12 +165,14 @@ public class CorpusReader
             /* c* = ((c+1) * N_c+1) / N_c
             * where c is the frequency of NGram and
             * N_c is the frequency of frequency c
+            * smoothedCount is c* / sumcounts
             */
             int Nc = freqOfFreq.get(c);
             int nextC = freqOfFreq.ceilingKey(c);
             int Nc1 = freqOfFreq.get(nextC);
 
-            smoothedCount = (double) ((c + (nextC - c)) * Nc1) / Nc;
+            double evalC = (double) ((c + (nextC - c)) * Nc1) / Nc;
+            smoothedCount = evalC / sumCounts;
         }
         return smoothedCount;
     }
@@ -202,21 +204,6 @@ public class CorpusReader
                 freqOfFreq.put(value , freqOfFreq.get(entry.getValue())+1);
             }
         }
-    }
-    
-    /**
-     * Returns the freq. of the frequency {@code c}.
-     * @param c
-     * @return freq. of {@code c}
-     */
-    private int getFreqOfFreqC(int c){
-        int result = 0;
-        for (int value : ngrams.values()) {
-            if (value == c) {
-                result++;
-            }
-        }
-        return result;
     }
     
     /**
@@ -253,17 +240,17 @@ public class CorpusReader
 //        return followUp / total;
 
         // AddOne Smoothening:
-        if (!inVocabulary(next)) 
-            return 0;
-        
-        double total = getNGramCount(previous) + 1;
-        double followUp = getNGramCount(previous + " " + next) + 1;
-//        System.out.println("Smoothed:::: prev :: " + previous + ":::" + total + ":::" + i++);
-//        System.out.println("Smoothed:::: prevnext :: " + previous + " " + next + ":::" + followUp + ":::" + i++);
-        if (followUp > total) {
-            System.out.println("P("+next+"|"+previous+")="+followUp+"/"+total+">1");
-        }
-        return followUp / total;
+//        if (!inVocabulary(next)) 
+//            return 0;
+//        
+//        double total = getNGramCount(previous) + 1;
+//        double followUp = getNGramCount(previous + " " + next) + 1;
+////        System.out.println("Smoothed:::: prev :: " + previous + ":::" + total + ":::" + i++);
+////        System.out.println("Smoothed:::: prevnext :: " + previous + " " + next + ":::" + followUp + ":::" + i++);
+//        if (followUp > total) {
+//            System.out.println("P("+next+"|"+previous+")="+followUp+"/"+total+">1");
+//        }
+//        return followUp / total;
     
     }
 }
