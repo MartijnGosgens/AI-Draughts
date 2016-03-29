@@ -230,7 +230,6 @@ public class CorpusReader
         }
         double numUnseenBigrams = Math.pow((double)(vocabulary.size()),2)
                 - numDistinctBigrams;
-        System.out.println("There are "+numUnseenBigrams+" unseen bigrams");
         freqOfFreqBi.put(0, (int)(numUnseenBigrams/LEGAL_FRACTION));
     }
     

@@ -195,7 +195,6 @@ public class SpellCorrector {
                         e.getKey(), Math.log10(cr.wordProbability(e.getKey()))+ 
                         Math.log10(
                                 e.getValue() 
-                                /// getNumPossibleErrors(e.getKey())
                         )
                 );
             }
@@ -359,9 +358,6 @@ class SentenceProbabilityPair {
     public SentenceProbabilityPair(String s, double p) {
         sentence = s;
         probability = p;
-        if (p>1) {
-            //System.out.println(s+" has probability higher than one");
-        }
     }
     
     public String getSentence() {
